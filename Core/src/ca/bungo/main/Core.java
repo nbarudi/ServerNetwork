@@ -2,15 +2,22 @@ package ca.bungo.main;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
-import ca.bungo.events.JoinLeaveEvent;
+import ca.bungo.api.CoreAPI;
+import ca.bungo.api.CoreAPI.PlayerInfo;
+import ca.bungo.cmds.CoreCommands;
+import ca.bungo.cmds.Administration.RankCommand;
+import ca.bungo.cmds.Player.InfoCommand;
+import ca.bungo.events.PlayerEventManagement;
 import net.md_5.bungee.api.ChatColor;
 
 public class Core extends JavaPlugin {
@@ -60,14 +67,15 @@ public class Core extends JavaPlugin {
 			this.password = getConfig().getString("database.password");
 		}
 	}
+
+	public ArrayList<PlayerInfo> pInfo = new ArrayList<>();
 	
-	public static Core instance;
+	public ArrayList<CoreCommands> coreCommands = new ArrayList<>();
 	
 	public MysqlDataSource source;
 	
 	@Override
 	public void onEnable() {
-		instance = this;
 		saveDefaultConfig();
 		logConsole("&aCore Systems are loading!");
 		logConsole("&3Connecting to MySql Database...");
@@ -80,19 +88,45 @@ public class Core extends JavaPlugin {
 			logConsole("&aConnected to MySql Server!");
 		}
 		
-		logConsole("&3Starting API Service...");
 		logConsole("&3Registering Events...");
 		registerEvents();
+		logConsole("&aEvents Registered...");
+		logConsole("&3Registering Commands...");
+		registerCommands();
+		logConsole("&aCommands Registered...");
+		
+		CoreAPI cAPI = new CoreAPI(this);
+		logConsole("&3Registering any currently active players..");
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			cAPI.createPlayer(player);
+		}
 	}
 	
 	@Override
 	public void onDisable() {
 		logConsole("&4Core Systems shuting down");
+		
+		CoreAPI cAPI = new CoreAPI(this);
+		cAPI.saveAllPlayers();
 	}
 	
-	public void registerEvents() {
+	private void registerEvents() {
 		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvents(new JoinLeaveEvent(), this);
+		pm.registerEvents(new PlayerEventManagement(this), this);
+	}
+	
+	private void registerCommands() {
+		coreCommands.add(new RankCommand(this, "Rank"));
+		coreCommands.add(new InfoCommand(this, "Info"));
+		//this.getCommand("").setExecutor(null);
+		
+		for(CoreCommands cmd : coreCommands) {
+			try {
+				this.getCommand(cmd.name).setExecutor(cmd);
+			}catch (Exception e) {
+				logConsole("&4Failed to register command: &e" + cmd.name);
+			}
+		}
 	}
 	
 	

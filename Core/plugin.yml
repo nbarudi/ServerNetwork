@@ -1,3 +1,8 @@
 name: Core
 version: 1.0
 main: ca.bungo.main.Core
+commands:
+  rank:
+    usage: /rank <player> <rank>
+  info:
+    usage: /info
