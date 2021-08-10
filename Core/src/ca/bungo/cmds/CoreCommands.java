@@ -21,6 +21,9 @@ public abstract class CoreCommands implements CommandExecutor {
 	public String permLevel = "user";
 	
 	public boolean reqPlayer = false;
+	public boolean levelRequirement = false;
+	
+	public int requiredLevel = 1;
 	
 	private CoreAPI cAPI;
 	private PermissionsAPI pAPI;
@@ -41,13 +44,27 @@ public abstract class CoreCommands implements CommandExecutor {
 		else
 			uPermLevel = cAPI.getPlayerInfo(((Player) sender)).rank;
 		
-		if(pAPI.checkPermission(uPermLevel, permLevel)) {
-			runCommand(uPermLevel, sender, cmd, label, args);
+		
+		if(this.reqPlayer && !(sender instanceof Player))
+			return true;
+		
+		if(levelRequirement && reqPlayer) {
+			if(cAPI.getPlayerInfo(((Player) sender)).level >= requiredLevel) {
+				runCommand(uPermLevel, sender, cmd, label, args);
+			}else {
+				sendResponse(sender, "You do not have permission to run this command!");
+			}
+			return true;
 		}else {
-			sendResponse(sender, "You do not have permission to run this command!");
+			if(pAPI.checkPermission(uPermLevel, permLevel)) {
+				runCommand(uPermLevel, sender, cmd, label, args);
+			}else {
+				sendResponse(sender, "You do not have permission to run this command!");
+			}
+			return true;
 		}
 		
-		return true;
+		
 	}
 	
 	public void sendResponse(CommandSender sender, String response) {

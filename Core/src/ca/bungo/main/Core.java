@@ -16,7 +16,10 @@ import ca.bungo.api.CoreAPI;
 import ca.bungo.api.CoreAPI.PlayerInfo;
 import ca.bungo.cmds.CoreCommands;
 import ca.bungo.cmds.Administration.RankCommand;
+import ca.bungo.cmds.Administration.SBanCommand;
 import ca.bungo.cmds.Player.InfoCommand;
+import ca.bungo.cmds.Player.NameCommand;
+import ca.bungo.events.ChatEvent;
 import ca.bungo.events.PlayerEventManagement;
 import net.md_5.bungee.api.ChatColor;
 
@@ -71,6 +74,7 @@ public class Core extends JavaPlugin {
 	public ArrayList<PlayerInfo> pInfo = new ArrayList<>();
 	
 	public ArrayList<CoreCommands> coreCommands = new ArrayList<>();
+	public boolean useCoreChat = true;
 	
 	public MysqlDataSource source;
 	
@@ -94,6 +98,9 @@ public class Core extends JavaPlugin {
 		logConsole("&3Registering Commands...");
 		registerCommands();
 		logConsole("&aCommands Registered...");
+		logConsole("&3Loading Configs...");
+		loadConfigs();
+		logConsole("&aConfigs Loaded...");
 		
 		CoreAPI cAPI = new CoreAPI(this);
 		logConsole("&3Registering any currently active players..");
@@ -113,11 +120,14 @@ public class Core extends JavaPlugin {
 	private void registerEvents() {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new PlayerEventManagement(this), this);
+		pm.registerEvents(new ChatEvent(this), this);
 	}
 	
 	private void registerCommands() {
 		coreCommands.add(new RankCommand(this, "Rank"));
 		coreCommands.add(new InfoCommand(this, "Info"));
+		coreCommands.add(new NameCommand(this, "Name"));
+		coreCommands.add(new SBanCommand(this, "SBan"));
 		//this.getCommand("").setExecutor(null);
 		
 		for(CoreCommands cmd : coreCommands) {
@@ -127,6 +137,11 @@ public class Core extends JavaPlugin {
 				logConsole("&4Failed to register command: &e" + cmd.name);
 			}
 		}
+	}
+	
+	private void loadConfigs() {
+		boolean coreChat = getConfig().getBoolean("core-chat");
+		useCoreChat = coreChat;
 	}
 	
 	

@@ -4,13 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import ca.bungo.events.CustomEvents.PlayerLevelUpEvent;
 import ca.bungo.main.Core;
+import ca.bungo.util.RankUtilities;
+import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
+import net.md_5.bungee.api.ChatColor;
 
 public class CoreAPI {
 	
@@ -40,6 +47,15 @@ public class CoreAPI {
 		public int exp = 0;
 		public int level = 0;
 		public String rank = "user";
+		
+		public String nickname = "";
+		
+		public String disguise = "";
+		public int fakeLevel = 0;
+		
+		public ArrayList<Integer> tasks = new ArrayList<Integer>();
+		
+		PlayerDisguise pd;
 
 		public PlayerInfo(Player player) {
 			
@@ -58,11 +74,13 @@ public class CoreAPI {
 						exp = results.getInt(4);
 						level = results.getInt(5);
 						rank = results.getString(6);
+						nickname = results.getString(7);
+						disguise = results.getString(8);
 						
 						this.exists = true;
-						return;
 					}
-					
+					autoUpdater();
+					return;
 				} catch (SQLException e) {
 					e.printStackTrace();
 					pl.logConsole("&4Database Connection Failed!");
@@ -89,6 +107,34 @@ public class CoreAPI {
 				this.level++;
 				this.exp -= reqXP;
 			}
+		}
+		
+		private void autoUpdater() {
+			tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(pl, () ->{
+				Player player = Bukkit.getPlayer(UUID.fromString(uuid));
+				if(player == null)
+					return;
+				String name = player.getName();
+				if(!nickname.isEmpty())
+					name = nickname;
+				
+				if(!disguise.isEmpty()) {
+					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', RankUtilities.ranks.get("user") + " &e" + disguise));
+				}else {
+					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', RankUtilities.ranks.get(rank) + " &e" + name));
+				}
+				
+			}, 20, 20));
+		}
+		
+		public void updateDisguise() {
+			if(disguise.isEmpty()) {
+				pd.stopDisguise();
+				return;
+			}
+			pd = new PlayerDisguise(disguise);
+			pd.setEntity(Bukkit.getPlayer(UUID.fromString(uuid)));
+			pd.startDisguise();
 		}
 	}
 	
@@ -146,6 +192,23 @@ public class CoreAPI {
 		}
 	}
 	
+	public int getPID(String username) {
+		if(!playerExists(username))
+			return 0;
+		try (Connection conn = pl.source.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT pid FROM corePlayerInfo WHERE username = ?")){
+			stmt.setString(1, username);
+			ResultSet results = stmt.executeQuery();
+			if(results.next())
+				return results.getInt(1);
+			return 0;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			pl.logConsole("&4Database Connection Failed!");
+			return 0;
+		}
+	}
+	
 	public boolean createPlayer(Player player) {
 		String uuid = player.getUniqueId().toString();
 		
@@ -179,12 +242,15 @@ public class CoreAPI {
 		
 		pl.logConsole("&3Saving Data for Player: &b" + player.getName());
 		
-		try (Connection conn = pl.source.getConnection(); PreparedStatement stmt = conn.prepareStatement("UPDATE corePlayerInfo SET username = ?, exp = ?, level = ?, rank = ? WHERE pid = ?")){
+		try (Connection conn = pl.source.getConnection(); PreparedStatement stmt = conn.prepareStatement("UPDATE corePlayerInfo SET username = ?, exp = ?, level = ?, rank = ?, nickname = ?, disguise = ? WHERE pid = ?")){
 			stmt.setString(1, player.getName());
 			stmt.setInt(2, info.exp);
 			stmt.setInt(3, info.level);
 			stmt.setString(4, info.rank);
-			stmt.setInt(5, info.pid);
+			stmt.setString(5, info.nickname);
+			stmt.setString(6, info.disguise);
+			stmt.setInt(7, info.pid);
+			
 			stmt.execute();
 		}catch (SQLException e) {
 			pl.logConsole("&4Database Connection Failed!");
@@ -211,8 +277,171 @@ public class CoreAPI {
 
 	public void removePlayerInfo(Player player) {
 		PlayerInfo info = getPlayerInfo(player);
+		for(int task : info.tasks) {
+			Bukkit.getScheduler().cancelTask(task);
+		}
 		savePlayer(player);
 		pl.pInfo.remove(info);
+	}
+	
+	public boolean checkBan(Player player) {
+		try(Connection conn = pl.source.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT reason, isglobal, server, endtime FROM corePlayerBans WHERE uuid = ? AND unbanned = 0")){
+			stmt.setString(1, player.getUniqueId().toString());
+			ResultSet results = stmt.executeQuery();
+			if(!results.next())
+				return false;
+			
+			String bReason = results.getString(1);
+			boolean isGlobal = results.getBoolean(2);
+			String sID = results.getString(3);
+			long endTime = results.getLong(4);
+			
+			if(!sID.equalsIgnoreCase(pl.getConfig().getString("server-id")))
+				return false;
+			
+			Date cDate = new Date();
+			if(cDate.getTime() > endTime) {
+				PreparedStatement ps = conn.prepareStatement("UPDATE corePlayerBans SET unbanned = 1 WHERE uuid = ? AND server = ?");
+				ps.setString(1, player.getUniqueId().toString());
+				ps.setString(2, pl.getConfig().getString("server-id"));
+				ps.execute();
+				ps.close();
+				return false;
+			}
+			else {
+				StringBuilder message = new StringBuilder();
+				message.append("&7[&bBungo &6Networks&7]\n");
+				message.append("&4You have been banned from this server " + (isGlobal ? "network" : "gamemode") + "!\n");
+				message.append("&7Reason:\n");
+				message.append(bReason + "\n");
+				if(!isGlobal)
+					message.append("&7You are free to join any other gamemode until your ban is up.\n");
+				message.append("&9Your ban will end on:\n");
+				Date endDate = new Date(endTime);
+				
+				//Calendar cal = Calendar.getInstance();
+				//cal.setTime(endDate);
+				if(endTime > 0) {
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy | hh:mm:ss");
+					message.append("&3" + sdf.format(endDate) + "\n");
+				}else {
+					message.append("&cNever!\n");
+				}
+				message.append("&8You are free to submit a ban appeal at: xxxxxxx\n");
+				player.kickPlayer(ChatColor.translateAlternateColorCodes('&', message.toString()));
+				return true;
+			}
+		} catch (SQLException e) {
+			pl.logConsole("&4Database Connection Failed!");
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public String checkBan(String uuid) {
+		try(Connection conn = pl.source.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT reason, isglobal, server, endtime FROM corePlayerBans WHERE uuid = ? AND unbanned = 0")){
+			stmt.setString(1, uuid);
+			ResultSet results = stmt.executeQuery();
+			if(!results.next())
+				return null;
+			
+			String bReason = results.getString(1);
+			boolean isGlobal = results.getBoolean(2);
+			String sID = results.getString(3);
+			long endTime = results.getLong(4);
+			
+			if(!sID.equalsIgnoreCase(pl.getConfig().getString("server-id")))
+				return null;
+			
+			Date cDate = new Date();
+			if(cDate.getTime() > endTime) {
+				PreparedStatement ps = conn.prepareStatement("UPDATE corePlayerBans SET unbanned = 1 WHERE uuid = ? AND server = ?");
+				ps.setString(1, uuid);
+				ps.setString(2, pl.getConfig().getString("server-id"));
+				ps.execute();
+				ps.close();
+				return null;
+			}
+			else {
+				StringBuilder message = new StringBuilder();
+				message.append("&7[&bBungo &6Networks&7]\n");
+				message.append("&4You have been banned from this server " + (isGlobal ? "network" : "gamemode") + "!\n");
+				message.append("&7Reason:\n");
+				message.append(bReason + "\n");
+				if(!isGlobal)
+					message.append("&7You are free to join any other gamemode until your ban is up.\n");
+				message.append("&9Your ban will end on:\n");
+				Date endDate = new Date(endTime);
+				
+				//Calendar cal = Calendar.getInstance();
+				//cal.setTime(endDate);
+				if(endTime > 0) {
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy | hh:mm:ss");
+					message.append("&3" + sdf.format(endDate) + "\n");
+				}else {
+					message.append("&cNever!\n");
+				}
+				message.append("&8You are free to submit a ban appeal at: xxxxxxx\n");
+				return message.toString();
+			}
+		} catch (SQLException e) {
+			pl.logConsole("&4Database Connection Failed!");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	//Ban System
+	public boolean banPlayer(String username, long time, boolean global, String reason) {
+		try(Connection conn = pl.source.getConnection(); 
+				PreparedStatement stmt = conn.prepareStatement("SELECT uuid FROM corePlayerInfo WHERE username = ?"); 
+				PreparedStatement stmt2 = conn.prepareStatement("INSERT INTO corePlayerBans(uuid, username, reason, isglobal, server, endtime) VALUES(?, ?, ?, ?, ?, ?)")){
+			
+			stmt.setString(1, username);
+			ResultSet rez = stmt.executeQuery();
+			if(!rez.next())
+				return false;
+			String uuid = rez.getString(1);
+			
+			OfflinePlayer op = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
+			stmt2.setString(1, uuid);
+			stmt2.setString(2, op.getName());
+			stmt2.setString(3, reason);
+			stmt2.setBoolean(4, global);
+			stmt2.setString(5, pl.getConfig().getString("server-id"));
+			stmt2.setLong(6, time);
+			stmt2.execute();
+			
+			if(Bukkit.getPlayer(username) != null) {
+				StringBuilder message = new StringBuilder();
+				message.append("&7[&bBungo &6Networks&7]\n");
+				message.append("&4You have been banned from this server " + (global ? "network" : "gamemode") + "!\n");
+				message.append("&7Reason:\n");
+				message.append(reason + "\n");
+				if(!global)
+					message.append("&7You are free to join any other gamemode until your ban is up.\n");
+				message.append("&9Your ban will end on:\n");
+				Date endDate = new Date();
+				endDate.setTime(time);
+				
+				//Calendar cal = Calendar.getInstance();
+				//cal.setTime(endDate);
+				if(time > 0) {
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy | hh:mm:ss");
+					message.append("&3" + sdf.format(endDate) + "\n");
+				}else {
+					message.append("&cNever!\n");
+				}
+				message.append("&8You are free to submit a ban appeal at: xxxxxxx\n");
+				Bukkit.getPlayer(username).kickPlayer(ChatColor.translateAlternateColorCodes('&', message.toString()));
+			}
+			
+			return true;
+		} catch (SQLException e) {
+			pl.logConsole("&4Database Connection Failed!");
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 }

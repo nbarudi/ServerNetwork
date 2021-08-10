@@ -4,4 +4,20 @@ database:
   database: db # name of your database. A database server can contain multiple databases
   user: username
   password: passy
+server-id: "test"
 core-chat: true
+#Keep Lowercase
+censored-words:
+    - fuck
+    - shit
+    - ass
+    - bitch
+    - hore
+    - cunt
+    - dick
+    - pussy
+    - crap
+    - dammit
+    - damn
+    - damnit
+banned-words: []

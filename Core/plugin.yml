@@ -6,3 +6,9 @@ commands:
     usage: /rank <player> <rank>
   info:
     usage: /info
+  name:
+    usage: /name <name>
+  nick:
+    usage: /nick
+  sban:
+    usage: /sban <player> <time> <reason>
