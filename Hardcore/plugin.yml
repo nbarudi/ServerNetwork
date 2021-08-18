@@ -1,0 +1,10 @@
+name: Hardcore
+version: 1.0
+main: ca.bungo.hardcore.hardcore.Hardcore
+depend: [Core, GriefPrevention]
+api-version: 1.13
+commands:
+  revive:
+    usage: /revive <player>
+  perks:
+    usage: /perks

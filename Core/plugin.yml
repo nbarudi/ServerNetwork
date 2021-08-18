@@ -1,6 +1,6 @@
 name: Core
 version: 1.0
-main: ca.bungo.main.Core
+main: ca.bungo.core.core.Core
 commands:
   rank:
     usage: /rank <player> <rank>
@@ -12,3 +12,5 @@ commands:
     usage: /nick
   sban:
     usage: /sban <player> <time> <reason>
+  exp:
+    usage: /exp <player> <add/set/remove> <ammount>
