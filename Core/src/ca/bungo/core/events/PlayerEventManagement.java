@@ -1,22 +1,18 @@
 package ca.bungo.core.events;
 
-import java.util.Random;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import ca.bungo.core.api.CoreAPI;
 import ca.bungo.core.api.CoreAPI.PlayerInfo;
 import ca.bungo.core.core.Core;
 import ca.bungo.core.events.CustomEvents.PlayerLevelUpEvent;
-
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-
 import net.md_5.bungee.api.ChatColor;
 
 public class PlayerEventManagement implements Listener {
@@ -44,11 +40,6 @@ public class PlayerEventManagement implements Listener {
 			return;
 		}
 		core.logConsole("&3Player Info Found: UUID: &e" + info.uuid + " &3| Username: &a" + info.username + " &3| Level: &a" + info.level + " &3| Rank: &a" + info.rank + " &3| Nickname: " + info.nickname);
-		if(!info.disguise.isEmpty()) {
-			Random rnd = new Random();
-			info.fakeLevel = rnd.nextInt(20) + 1;
-			info.updateDisguise();
-		}
 			
 	}
 	

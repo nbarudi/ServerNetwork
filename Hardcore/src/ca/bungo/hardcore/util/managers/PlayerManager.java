@@ -2,9 +2,11 @@ package ca.bungo.hardcore.util.managers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import ca.bungo.hardcore.hardcore.Hardcore;
 import ca.bungo.hardcore.util.player.PlayerData;
@@ -14,6 +16,8 @@ public class PlayerManager {
 	Hardcore hardcore;
 	
 	public ArrayList<PlayerData> playerData = new ArrayList<PlayerData>();
+	
+	public HashMap<String, Inventory> playerOpened = new HashMap<String, Inventory>();
 	
 	public PlayerManager(Hardcore hardcore) {
 		this.hardcore = hardcore;

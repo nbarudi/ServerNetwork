@@ -1,11 +1,12 @@
 name: Core
 version: 1.0
 main: ca.bungo.core.core.Core
+softdepend: [Vault]
 commands:
   rank:
     usage: /rank <player> <rank>
-  info:
-    usage: /info
+  stats:
+    usage: /stats
   name:
     usage: /name <name>
   nick:

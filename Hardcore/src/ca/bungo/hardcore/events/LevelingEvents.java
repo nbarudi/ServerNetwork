@@ -24,6 +24,8 @@ public class LevelingEvents implements Listener {
 	public void entityKillEvent(EntityDeathEvent event) {
 		if(!(event.getEntity().getKiller() instanceof Player))
 			return;
+		
+		//Leveling Handler
 		Player player = event.getEntity().getKiller();
 		PlayerInfo info = hardcore.cAPI.getPlayerInfo(player);
 		
@@ -42,6 +44,10 @@ public class LevelingEvents implements Listener {
 		player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + " &7You have gained &e" + xpGain + " &7Experience from killing a " + event.getEntity().getName()));
 		info.increaseEXP(xpGain);
 		
+		
+		//Economy Handler
+		hardcore.eAPI.depositPlayer(info.username, xpGain);
+		player.sendMessage(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', "&9Economy> &7You have gained &e" + xpGain + " &7credits from killing a " + event.getEntity().getName()));
 	}
 
 }

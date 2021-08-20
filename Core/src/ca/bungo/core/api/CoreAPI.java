@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import ca.bungo.core.core.Core;
 import ca.bungo.core.events.CustomEvents.PlayerLevelUpEvent;
 import ca.bungo.core.util.RankUtilities;
-import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import net.md_5.bungee.api.ChatColor;
 
 public class CoreAPI {
@@ -55,7 +54,6 @@ public class CoreAPI {
 		
 		public ArrayList<Integer> tasks = new ArrayList<Integer>();
 		
-		PlayerDisguise pd;
 
 		public PlayerInfo(Player player) {
 			
@@ -150,16 +148,6 @@ public class CoreAPI {
 				
 			}, 20, 20));
 		}
-		
-		public void updateDisguise() {
-			if(disguise.isEmpty()) {
-				pd.stopDisguise();
-				return;
-			}
-			pd = new PlayerDisguise(disguise);
-			pd.setEntity(Bukkit.getPlayer(UUID.fromString(uuid)));
-			pd.startDisguise();
-		}
 	}
 	
 	public Core pl;
@@ -230,6 +218,24 @@ public class CoreAPI {
 			e.printStackTrace();
 			pl.logConsole("&4Database Connection Failed!");
 			return 0;
+		}
+	}
+	
+	public String getOfflineUUID(String username) {
+		int pID = getPID(username);
+		if(pID == 0)
+			return null;
+		
+		try (Connection conn = pl.source.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT uuid FROM corePlayerInfo WHERE pid = ?")){
+			stmt.setInt(1, pID);
+			ResultSet results = stmt.executeQuery();
+			if(!results.next())
+				return null;
+			return results.getString(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			pl.logConsole("&4Database Connection Failed!");
+			return null;
 		}
 	}
 	

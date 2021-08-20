@@ -4,18 +4,26 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import ca.bungo.core.api.CoreAPI;
+import ca.bungo.core.api.EconomyAPI;
 import ca.bungo.core.api.PermissionsAPI;
 import ca.bungo.core.core.Core;
 import ca.bungo.hardcore.cmds.PerksCommand;
 import ca.bungo.hardcore.cmds.ReviveCommand;
+import ca.bungo.hardcore.cmds.ShopCommand;
+import ca.bungo.hardcore.events.InventoryPerkHandler;
 import ca.bungo.hardcore.events.InventoryShopHandler;
 import ca.bungo.hardcore.events.LevelingEvents;
 import ca.bungo.hardcore.events.PlayerEvents;
+import ca.bungo.hardcore.items.CustomItem;
+import ca.bungo.hardcore.items.GeneralItems.LifeEggItem;
+import ca.bungo.hardcore.items.ShopItems.Credits.BindingAgentItem;
+import ca.bungo.hardcore.items.ShopItems.SP.ExtraLifeItem;
 import ca.bungo.hardcore.skills.Skill;
 import ca.bungo.hardcore.skills.Unlock;
 import ca.bungo.hardcore.skills.Autosmelt.AutoSmelt1;
@@ -23,12 +31,10 @@ import ca.bungo.hardcore.skills.Autosmelt.AutoSmelt2;
 import ca.bungo.hardcore.skills.Autosmelt.AutoSmelt3;
 import ca.bungo.hardcore.skills.Autosmelt.AutoSmelt4;
 import ca.bungo.hardcore.skills.Autosmelt.AutoSmelt5;
-import ca.bungo.hardcore.skills.Haste.Haste1;
-import ca.bungo.hardcore.skills.Haste.Haste2;
-import ca.bungo.hardcore.skills.Haste.Haste3;
 import ca.bungo.hardcore.skills.HealthRegeneration.Regen1;
 import ca.bungo.hardcore.skills.Keep.KeepInventory;
 import ca.bungo.hardcore.skills.Keep.KeepLevels;
+import ca.bungo.hardcore.util.managers.ItemManager;
 import ca.bungo.hardcore.util.managers.PlayerManager;
 
 
@@ -39,9 +45,11 @@ public class Hardcore extends JavaPlugin {
 	public Core core;
 	public CoreAPI cAPI;
 	public PermissionsAPI pAPI;
+	public EconomyAPI eAPI;
 	
 	//Hardcore Systems
 	public PlayerManager pm;
+	public ItemManager itm;
 	
 	public ArrayList<Skill> skills = new ArrayList<Skill>();
 	
@@ -60,17 +68,31 @@ public class Hardcore extends JavaPlugin {
 		
 		cAPI = new CoreAPI(core);
 		pAPI = new PermissionsAPI(core);
+		eAPI = new EconomyAPI(core);
 		
 		pm = new PlayerManager(this);
+		itm = new ItemManager(this);
 		
 		registerConfigs();
 		registerCommands();
 		registerSkills();
+		registerItems();
 		registerEvents();
 		
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			pm.createPlayerData(player);
 		}
+	}
+	
+	private void registerItems() {
+		//Normal Items
+		itm.addItem(new LifeEggItem(this, "Life Egg", Material.VILLAGER_SPAWN_EGG));
+		
+		//Credit Items
+		itm.addItem(new BindingAgentItem(this, "Binding Agent", Material.SNOWBALL));
+		
+		//Skill-Point Items
+		itm.addItem(new ExtraLifeItem(this, "Extra Life", Material.TOTEM_OF_UNDYING));
 	}
 	
 	private void registerSkills() {
@@ -89,15 +111,15 @@ public class Hardcore extends JavaPlugin {
 		skills.add(new AutoSmelt5(this, "AutoSmelt 5"));
 		
 		//Haste Family
-		skills.add(new Haste1(this, "Haste 1"));
-		skills.add(new Haste2(this, "Haste 2"));
-		skills.add(new Haste3(this, "Haste 3"));
+		//skills.add(new Haste1(this, "Haste 1"));
+		//skills.add(new Haste2(this, "Haste 2"));
+		//skills.add(new Haste3(this, "Haste 3"));
 		
 		/*Speed Family
 		 * skills.add(new Speed1(this, "Speed 1"));
 		 * skills.add(new Speed2(this, "Speed 2"));
-		 * skills.add(new Speed3(this, "Speed 3"));
 		 */
+		
 		/*Resistance Family
 		 * skills.add(new Resistance1(this, "Resistance 1"));
 		 * skills.add(new Resistance2(this, "Resistance 2"));
@@ -112,6 +134,7 @@ public class Hardcore extends JavaPlugin {
 	private void registerCommands() {
 		core.coreCommands.add(new ReviveCommand(core, "Revive"));
 		core.coreCommands.add(new PerksCommand(core, "Perks"));
+		core.coreCommands.add(new ShopCommand(core, "Shop"));
 		
 		core.reregisterCommands(this);
 	}
@@ -120,10 +143,15 @@ public class Hardcore extends JavaPlugin {
 		
 		pm.registerEvents(new PlayerEvents(this), this);
 		pm.registerEvents(new LevelingEvents(this), this);
+		pm.registerEvents(new InventoryPerkHandler(this), this);
 		pm.registerEvents(new InventoryShopHandler(this), this);
 		
 		for(Skill s : skills) {
 			pm.registerEvents(s, this);
+		}
+		
+		for(CustomItem ci : itm.getAllItems()) {
+			pm.registerEvents(ci, this);
 		}
 		
 	}

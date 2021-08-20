@@ -11,12 +11,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/Old Files/Minecraft Things/Server Network/Plugins/LibsDisguises-10.0.26-Free.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="D:/Old Files/Minecraft Things/Server Network/Plugins/ProtocolLib.jar">
+	<classpathentry kind="lib" path="D:/Old Files/Minecraft Things/Server Network/Plugins/Vault.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>

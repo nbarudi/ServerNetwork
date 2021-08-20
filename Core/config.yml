@@ -6,6 +6,7 @@ database:
   password: passy
 server-id: "test"
 core-chat: true
+core-economy: false
 #Keep Lowercase
 censored-words:
     - fuck

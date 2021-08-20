@@ -1,7 +1,6 @@
 package ca.bungo.hardcore.events;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -12,189 +11,64 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import ca.bungo.hardcore.hardcore.Hardcore;
-import ca.bungo.hardcore.skills.Skill;
-import ca.bungo.hardcore.util.ItemUtility;
-import ca.bungo.hardcore.util.managers.SkillManager;
+import ca.bungo.hardcore.util.managers.ItemManager.ShopType;
 import ca.bungo.hardcore.util.player.PlayerData;
 import net.md_5.bungee.api.ChatColor;
 
 public class InventoryShopHandler implements Listener {
 	
-	Hardcore hardcore;
-	
-	public static HashMap<String, Integer> pageNumbers = new HashMap<>();
+	private Hardcore hardcore;
 	
 	public InventoryShopHandler(Hardcore hardcore) {
 		this.hardcore = hardcore;
 	}
 	
 	@EventHandler
-	public void onInteract(InventoryClickEvent event) {
-		if(event.getInventory() == null || event.getCurrentItem() == null)
-			return;
-		
-		String name = event.getView().getTitle();
+	public void onInvInteract(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
-		
 		PlayerData data = hardcore.pm.getPlayerData(player);
 		
-		if(!name.contains("Skill Points: " + data.skillPoints))
+		if(event.getClickedInventory() == null)
 			return;
 		
-		//The player is using the shop menu
+		if(!event.getClickedInventory().equals(hardcore.pm.playerOpened.get(player.getName())))
+			return;
+		
 		event.setCancelled(true);
-		ItemStack item = event.getCurrentItem();
-		if(item == null || item.getItemMeta() == null || item.getItemMeta().getDisplayName() == null)
-			return;
-		
-		String itemName = item.getItemMeta().getDisplayName().toString().substring(2);
-		
-		if(itemName.equalsIgnoreCase("Next Page")) {
-			player.closeInventory();
-			Inventory inv = createInventoryMenu(data, pageNumbers.get(data.username) + 1);
-			player.openInventory(inv);
-			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Perks> &7Opening next page!"));
-			return;
-		}
-		
-		Skill skill = SkillManager.getSkill(itemName);
-		if(skill == null)
-			return;
-		if(skill.purchaseSkill(data)) {
-			data.ownedPerks.add(skill.name);
-			player.closeInventory();
-			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Perks> &7You have purchased the Skill &e" + skill.name + "&7!"));
-			return;
-		}else {
-			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Perks> &7Failed to purchase skill &e" + skill.name + "&7!"));
-		}
-			
 	}
 	
-	public static Inventory createInventoryMenu(PlayerData data, int page) {
+	public static Inventory openInventory(PlayerData data, ShopType type) {
+		Inventory inv = Bukkit.createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', "&eShop Menu"));
 		
-		Inventory inv = Bukkit.createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', "&aSkill Points: " + data.skillPoints));
-		
-		if(!data.hasPerk("Unlock")) {
-			inv.setItem(0, ItemUtility.createItem("&4" + SkillManager.getSkill("Unlock").name, Material.REDSTONE_BLOCK, "&7" + SkillManager.getSkill("Unlock").desc));
-			return inv;
-		}
-		
-		pageNumbers.put(data.username, page);
-		
-		int index = page*9;
-		
-		int slot = 1;
-		int temp = 1;
-		
-		for(int i = index; i < SkillManager.families.size(); i++) {
-			String family = SkillManager.families.get(i);
-			if(i >= index+9)
-				break;
+		if(type == null) {
+			ItemStack spShop = new ItemStack(Material.TOTEM_OF_UNDYING);
+			ItemMeta spim = spShop.getItemMeta();
+			spim.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&9Skill-Point Shop"));
+			List<String> splore = new ArrayList<String>();
+			splore.add(ChatColor.translateAlternateColorCodes('&', "&eAll items in this shop require Skill Points to purchase!"));
+			spim.setLore(splore);
+			spShop.setItemMeta(spim);
 			
-			List<String> descriptions = new ArrayList<String>();
-			String name = "";
-			Material mat = Material.REDSTONE_BLOCK;
-			for(Skill skill : SkillManager.getSkillFamily(family)) {
-				
-				if(!data.hasPerk(skill.name) && skill.tier == 1) {
-					name = skill.name;
-					descriptions.add("&7Tier " + skill.tier + ": " + skill.desc + " &eCost: " + skill.cost);
-					mat = Material.REDSTONE_BLOCK;
-				}
-				else if(!data.hasPerk(skill.name) && (!skill.requires.isEmpty() && data.hasPerk(skill.requires))) {
-					name = skill.name;
-					descriptions.add("&7Tier " + skill.tier + ": " + skill.desc + " &eCost: " + skill.cost);
-				}
-				else if(!data.hasPerk(skill.name) && (!skill.requires.isEmpty() && !data.hasPerk(skill.requires))) {
-					descriptions.add("&7Tier " + skill.tier + ": " + skill.desc + " &eCost: " + skill.cost);
-				}
-				else if(!data.hasPerk(skill.name)) {
-					name = skill.name;
-					descriptions.add("&7Tier " + skill.tier + ": " + skill.desc + " &eCost: " + skill.cost);
-				}
-				else {
-					descriptions.add("&aTier " + skill.tier + ": " + skill.desc + " &eCost: " + skill.cost);
-					mat = Material.GREEN_CONCRETE;
-				}
-			}
+			inv.setItem(20, spShop);
 			
-			if(name.isEmpty()) {
-				name = "Completed!";
-				mat = Material.EMERALD_BLOCK;
-			}
+			ItemStack cShop = new ItemStack(Material.EMERALD);
+			ItemMeta cim = cShop.getItemMeta();
+			cim.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&9Credit Shop"));
+			List<String> clore = new ArrayList<String>();
+			clore.add(ChatColor.translateAlternateColorCodes('&', "&eAll items in this shop require Credits to purchase!"));
+			cim.setLore(clore);
+			cShop.setItemMeta(cim);
 			
-			ItemStack item;
-			if(SkillManager.getSkillFamily(family).size() == 0) {
-				item = ItemUtility.createItem("&7Coming Soon!", Material.BEDROCK, "&eThis Skill Tree is not yet active!", "&8Code-Name: " + family);
-			}else {
-				item = ItemUtility.createItem("&7" + name, mat, descriptions);
-			}
-			
-			
-			inv.setItem(slot, item);
-			
-			if(temp >= 3) {
-				temp = 0;
-				slot += 9;
-			}
-			slot+=3;
-			temp++;
+			inv.setItem(24, cShop);
+		}else {
 			
 		}
 		
-/*
-		for(String family : SkillManager.families) {
-			if(SkillManager.families.size() > 9 && page <= Math.floor(SkillManager.families.size() / 9))
-				break;
-			List<String> descriptions = new ArrayList<String>();
-			String name = "";
-			Material mat = Material.REDSTONE_BLOCK;
-			for(Skill skill : SkillManager.getSkillFamily(family)) {
-				
-				if(!data.hasPerk(skill.name) && skill.tier == 1) {
-					name = skill.name;
-					descriptions.add("&7Tier " + skill.tier + ": " + skill.desc + " &eCost: " + skill.cost);
-					mat = Material.REDSTONE_BLOCK;
-				}
-				else if(!data.hasPerk(skill.name) && (!skill.requires.isEmpty() && data.hasPerk(skill.requires))) {
-					name = skill.name;
-					descriptions.add("&7Tier " + skill.tier + ": " + skill.desc + " &eCost: " + skill.cost);
-				}
-				else if(!data.hasPerk(skill.name) && (!skill.requires.isEmpty() && !data.hasPerk(skill.requires))) {
-					descriptions.add("&7Tier " + skill.tier + ": " + skill.desc + " &eCost: " + skill.cost);
-				}
-				else if(!data.hasPerk(skill.name)) {
-					name = skill.name;
-					descriptions.add("&7Tier " + skill.tier + ": " + skill.desc + " &eCost: " + skill.cost);
-				}
-				else {
-					descriptions.add("&aTier " + skill.tier + ": " + skill.desc + " &eCost: " + skill.cost);
-					mat = Material.GREEN_CONCRETE;
-				}
-			}
-			
-			if(name.isEmpty()) {
-				name = "Completed!";
-				mat = Material.EMERALD_BLOCK;
-			}
-				
-			
-			ItemStack item = ItemUtility.createItem("&7" + name, mat, descriptions);
-			
-			if(((index*3)+1 % 9) == 7 )
-				index += 3;
-			inv.setItem((index*3)+1, item);
-			index++;
-		}
-		*/
-		ItemStack nPage = ItemUtility.createItem("&bNext Page", Material.PAPER, "&7Click to go to the next page of perks!");
+		Hardcore.hardcore.pm.playerOpened.put(data.username, inv);
 		
-		if(SkillManager.families.size() > 9 && page < Math.floor(SkillManager.families.size() / 9))
-			inv.setItem(49, nPage);
-			
 		return inv;
 	}
 

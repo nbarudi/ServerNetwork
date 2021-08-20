@@ -8,3 +8,5 @@ commands:
     usage: /revive <player>
   perks:
     usage: /perks
+  shop:
+    usage: /shop

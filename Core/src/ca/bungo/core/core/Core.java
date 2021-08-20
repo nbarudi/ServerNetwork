@@ -126,7 +126,7 @@ public class Core extends JavaPlugin {
 	
 	private void registerCommands() {
 		coreCommands.add(new RankCommand(this, "Rank"));
-		coreCommands.add(new InfoCommand(this, "Info"));
+		coreCommands.add(new InfoCommand(this, "Stats"));
 		coreCommands.add(new NameCommand(this, "Name"));
 		coreCommands.add(new SBanCommand(this, "SBan"));
 		coreCommands.add(new ExperienceCommand(this, "Exp"));
@@ -185,8 +185,6 @@ public class Core extends JavaPlugin {
 		dataSource.setDatabaseName(database.getDatabase());
 		dataSource.setUser(database.getUser());
 		dataSource.setPassword(database.getPassword());
-		
-		logConsole(database.toString());
 		
 		
 		try {
