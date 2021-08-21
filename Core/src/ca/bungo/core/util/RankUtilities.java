@@ -9,6 +9,11 @@ public class RankUtilities {
 
 	{
 		put("user", "&7&lUser");
+		put("user+", "&7&lUser+");
+		put("user++", "&7&lUser++");
+		put("vip", "&5&lVip");
+		put("vip+", "&5&lVip+");
+		put("vip++", "&5&lVip++");
 		put("trainee", "&6&lTrainee");
 		put("jrmod", "&a&lJr.Mod");
 		put("mod", "&a&lMod");

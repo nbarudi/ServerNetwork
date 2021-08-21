@@ -21,6 +21,10 @@ public class PermissionsAPI {
 
 	{
 		put("user", 1);
+		put("user+", 2);
+		put("user++", 3);
+		put("vip", 4);
+		put("vip++", 5);
 		put("trainee", 244);
 		put("jrmod", 245);
 		put("mod", 246);

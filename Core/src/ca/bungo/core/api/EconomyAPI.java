@@ -60,5 +60,15 @@ public class EconomyAPI {
 			return false;
 		return true;
 	}
+	
+	public boolean hasCredits(String username, double amount) {
+		OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(cAPI.getPlayerInfo(Bukkit.getPlayer(username)).uuid));
+		return econ.has(player, amount);
+	}
+	
+	public double getBalance(String username) {
+		OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(cAPI.getPlayerInfo(Bukkit.getPlayer(username)).uuid));
+		return econ.getBalance(player);
+	}
 
 }

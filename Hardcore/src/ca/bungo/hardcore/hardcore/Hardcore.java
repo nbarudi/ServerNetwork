@@ -13,6 +13,7 @@ import ca.bungo.core.api.CoreAPI;
 import ca.bungo.core.api.EconomyAPI;
 import ca.bungo.core.api.PermissionsAPI;
 import ca.bungo.core.core.Core;
+import ca.bungo.hardcore.cmds.ItemsCommand;
 import ca.bungo.hardcore.cmds.PerksCommand;
 import ca.bungo.hardcore.cmds.ReviveCommand;
 import ca.bungo.hardcore.cmds.ShopCommand;
@@ -23,6 +24,7 @@ import ca.bungo.hardcore.events.PlayerEvents;
 import ca.bungo.hardcore.items.CustomItem;
 import ca.bungo.hardcore.items.GeneralItems.LifeEggItem;
 import ca.bungo.hardcore.items.ShopItems.Credits.BindingAgentItem;
+import ca.bungo.hardcore.items.ShopItems.Credits.ExtraClaimsItem;
 import ca.bungo.hardcore.items.ShopItems.SP.ExtraLifeItem;
 import ca.bungo.hardcore.skills.Skill;
 import ca.bungo.hardcore.skills.Unlock;
@@ -74,9 +76,9 @@ public class Hardcore extends JavaPlugin {
 		itm = new ItemManager(this);
 		
 		registerConfigs();
+		registerItems();
 		registerCommands();
 		registerSkills();
-		registerItems();
 		registerEvents();
 		
 		for(Player player : Bukkit.getOnlinePlayers()) {
@@ -90,6 +92,7 @@ public class Hardcore extends JavaPlugin {
 		
 		//Credit Items
 		itm.addItem(new BindingAgentItem(this, "Binding Agent", Material.SNOWBALL));
+		itm.addItem(new ExtraClaimsItem(this, "Extra Claims", Material.GRASS_BLOCK));
 		
 		//Skill-Point Items
 		itm.addItem(new ExtraLifeItem(this, "Extra Life", Material.TOTEM_OF_UNDYING));
@@ -135,6 +138,7 @@ public class Hardcore extends JavaPlugin {
 		core.coreCommands.add(new ReviveCommand(core, "Revive"));
 		core.coreCommands.add(new PerksCommand(core, "Perks"));
 		core.coreCommands.add(new ShopCommand(core, "Shop"));
+		core.coreCommands.add(new ItemsCommand(core, "Items"));
 		
 		core.reregisterCommands(this);
 	}

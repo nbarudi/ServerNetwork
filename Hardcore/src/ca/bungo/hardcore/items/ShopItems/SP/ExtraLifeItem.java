@@ -69,6 +69,7 @@ public class ExtraLifeItem extends CustomItem {
 				hardcore.pm.savePlayerData(data);
 				
 				player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Lives> &7You have gained an extra life! You currently have: &e" + data.lives));
+				player.getInventory().getItemInMainHand().setAmount(0);
 			}
 	}
 
