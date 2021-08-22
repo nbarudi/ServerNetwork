@@ -104,6 +104,7 @@ public class CoreAPI {
 					return;
 				this.level++;
 				this.exp -= reqXP;
+				increaseEXP(0);
 			}
 		}
 		
@@ -128,6 +129,7 @@ public class CoreAPI {
 					return;
 				this.level++;
 				this.exp -= reqXP;
+				increaseEXP(0);
 			}
 		}
 		

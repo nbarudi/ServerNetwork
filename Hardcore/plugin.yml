@@ -12,3 +12,5 @@ commands:
     usage: /shop
   items:
     usage: /items
+  bounty:
+    usage: /bounty

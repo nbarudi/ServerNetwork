@@ -13,6 +13,7 @@ import ca.bungo.core.api.CoreAPI;
 import ca.bungo.core.api.EconomyAPI;
 import ca.bungo.core.api.PermissionsAPI;
 import ca.bungo.core.core.Core;
+import ca.bungo.hardcore.cmds.BountyCommand;
 import ca.bungo.hardcore.cmds.ItemsCommand;
 import ca.bungo.hardcore.cmds.PerksCommand;
 import ca.bungo.hardcore.cmds.ReviveCommand;
@@ -139,6 +140,7 @@ public class Hardcore extends JavaPlugin {
 		core.coreCommands.add(new PerksCommand(core, "Perks"));
 		core.coreCommands.add(new ShopCommand(core, "Shop"));
 		core.coreCommands.add(new ItemsCommand(core, "Items"));
+		core.coreCommands.add(new BountyCommand(core, "Bounty"));
 		
 		core.reregisterCommands(this);
 	}

@@ -32,13 +32,13 @@ public class LevelingEvents implements Listener {
 		int xpGain = 0;
 		
 		if(event.getEntity() instanceof Monster) {
-			xpGain += 50; //100XP per monster kill
+			xpGain += 75; //100XP per monster kill
 		}
 		else if(event.getEntity() instanceof Player) {
-			xpGain += 100;
+			xpGain += 150;
 		}
 		else {
-			xpGain = 25;
+			xpGain = 50;
 		}
 		
 		player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + " &7You have gained &e" + xpGain + " &7Experience from killing a " + event.getEntity().getName()));
