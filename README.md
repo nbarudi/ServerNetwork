@@ -49,7 +49,7 @@
         - *More to come*
     - Leveling up will gain the player extra claim blocks for survival
 
-    **Hardcore Spesific**
+    **Hardcore Specific**
     - Skill points are gained at the same rate
     - Perks cost more (how much unknown) to purchase with SP
     - Players can buy more lives with their SP 
