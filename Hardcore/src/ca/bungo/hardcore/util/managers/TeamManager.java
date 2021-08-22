@@ -1,5 +1,6 @@
 package ca.bungo.hardcore.util.managers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -16,13 +17,13 @@ public class TeamManager {
 	public class PlayerTeam {
 		
 		public String teamName;
-		public List<String> playerUUIDs;
+		public List<String> playerUUIDs = new ArrayList<String>();
 		
 		public String teamLeader;
-		public List<String> officerUUIDs;
+		public List<String> officerUUIDs = new ArrayList<String>();
 		public int memberCount;
 		
-		public List<String> invited; //This is reset every time the server reloads / restarts
+		public List<String> invited = new ArrayList<String>(); //This is reset every time the server reloads / restarts
 									 //Only meant to be temporary
 		
 		//Maybe: Might add a 'Team Bank' system to allow for players to have a shared economy
@@ -34,9 +35,11 @@ public class TeamManager {
 		public void saveTeamData() {
 			ConfigurationSection cfgSec = hardcore.getConfig().getConfigurationSection("Teams");
 			if(cfgSec == null)
-				hardcore.getConfig().createSection("Teams");
+				cfgSec = hardcore.getConfig().createSection("Teams");
 			ConfigurationSection teamSection = cfgSec.getConfigurationSection(teamName);
-			teamSection.set("Members", playerUUIDs.toString());
+			if(teamSection == null)
+				teamSection = cfgSec.createSection(teamName);
+			teamSection.set("Members", playerUUIDs);
 			teamSection.set("Officers", officerUUIDs);
 			teamSection.set("Leader", teamLeader);
 			
@@ -55,9 +58,23 @@ public class TeamManager {
 		public String invitePlayer(Player invitee, Player inviter) {
 			if(playerUUIDs.contains(invitee.getUniqueId().toString()))
 				return "This player is already in your team!";
+			if(invited.contains(invitee.getUniqueId().toString()))
+				return "This player already has an invite!";
 			invited.add(invitee.getUniqueId().toString());
-			invitee.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Teams> &e" + inviter.getName() + "&7 has invited you to join: &e" + teamName + "&7! Do /team join " + teamName + " to accept the invite!"));
+			invitee.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Teams> &e" + inviter.getName() + "&7 has invited you to join: &e" + teamName + "&7! Do /teams join " + teamName + " to accept the invite!"));
 			announceTeam("&e" + inviter.getName() + " &7has invited &e" + invitee.getName() + "&7 to the team!");
+			return null;
+		}
+		
+		public String joinTeam(Player joiner) {
+			if(playerUUIDs.contains(joiner.getUniqueId().toString()))
+				return "You are already in this team!";
+			if(!invited.contains(joiner.getUniqueId().toString()))
+				return "You do not have an invite to this team!";
+			invited.remove(joiner.getUniqueId().toString());
+			playerUUIDs.add(joiner.getUniqueId().toString());
+			announceTeam("&e" + joiner.getName() + "&7 has joined the team!");
+			saveTeamData();
 			return null;
 		}
 		
@@ -97,6 +114,23 @@ public class TeamManager {
 			announceTeam("&e" + teamLeader.getName() + "&7 Has transfered Team Ownership to &e" + newLeader.getName() + "&7!");
 			saveTeamData();
 			return null;
+		}
+		
+		public String leaveTeam(Player leaver) {
+			if(!playerUUIDs.contains(leaver.getUniqueId().toString()))
+				return "You are not in this team!";
+			if(teamLeader.equals(leaver.getUniqueId().toString()))
+				return "You cannot leave your own team!";
+			playerUUIDs.remove(leaver.getUniqueId().toString());
+			announceTeam("&e" + leaver.getName() + "&7 has left the team!");
+			saveTeamData();
+			return null;
+		}
+		
+		public void disband() {
+			hardcore.tm.teams.remove(this.teamName);
+			hardcore.getConfig().set("Teams." + this.teamName, null);
+			hardcore.saveConfig();
 		}
 	}
 	
@@ -156,6 +190,23 @@ public class TeamManager {
 		return null;
 	}
 	
+	public PlayerTeam getTeam(Player player) {
+		if(!playerHasTeam(player))
+			return null;
+		for(PlayerTeam team : teams.values())
+			if(team.playerUUIDs.contains(player.getUniqueId().toString()))
+				return team;
+		return null;
+	}
+	
+	public boolean playerHasTeam(Player player) {
+		for(PlayerTeam team : teams.values())
+			for(String uuid : team.playerUUIDs)
+				if(player.getUniqueId().toString().equals(uuid))
+					return true;
+		return false;
+	}
+	
 	public boolean teamExists(String teamName) {
 		for(String name : teams.keySet()) 
 			if(name.equalsIgnoreCase(teamName))
@@ -166,6 +217,8 @@ public class TeamManager {
 	public String createTeam(Player player, String teamName) {
 		if(teamExists(teamName))
 			return "Team Already Exists";
+		if(playerHasTeam(player))
+			return "You are already in a team!";
 		PlayerTeam team = new PlayerTeam(teamName);
 		team.teamLeader = player.getUniqueId().toString();
 		team.memberCount++;
@@ -173,7 +226,13 @@ public class TeamManager {
 		teams.put(teamName, team);
 		
 		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&9Teams> &e" + player.getName() + "&7 has created the team: &e" + teamName + "&7!"));
+		team.saveTeamData();
 		return null;
+	}
+	
+	public void saveAllData() {
+		for(PlayerTeam team : teams.values())
+			team.saveTeamData();
 	}
 
 }

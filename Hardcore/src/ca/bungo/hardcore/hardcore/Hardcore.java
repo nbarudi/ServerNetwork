@@ -18,6 +18,7 @@ import ca.bungo.hardcore.cmds.ItemsCommand;
 import ca.bungo.hardcore.cmds.PerksCommand;
 import ca.bungo.hardcore.cmds.ReviveCommand;
 import ca.bungo.hardcore.cmds.ShopCommand;
+import ca.bungo.hardcore.cmds.TeamCommand;
 import ca.bungo.hardcore.events.InventoryPerkHandler;
 import ca.bungo.hardcore.events.InventoryShopHandler;
 import ca.bungo.hardcore.events.LevelingEvents;
@@ -39,6 +40,7 @@ import ca.bungo.hardcore.skills.Keep.KeepInventory;
 import ca.bungo.hardcore.skills.Keep.KeepLevels;
 import ca.bungo.hardcore.util.managers.ItemManager;
 import ca.bungo.hardcore.util.managers.PlayerManager;
+import ca.bungo.hardcore.util.managers.TeamManager;
 
 
 
@@ -53,6 +55,7 @@ public class Hardcore extends JavaPlugin {
 	//Hardcore Systems
 	public PlayerManager pm;
 	public ItemManager itm;
+	public TeamManager tm;
 	
 	public ArrayList<Skill> skills = new ArrayList<Skill>();
 	
@@ -75,6 +78,7 @@ public class Hardcore extends JavaPlugin {
 		
 		pm = new PlayerManager(this);
 		itm = new ItemManager(this);
+		tm = new TeamManager(this);
 		
 		registerConfigs();
 		registerItems();
@@ -85,6 +89,11 @@ public class Hardcore extends JavaPlugin {
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			pm.createPlayerData(player);
 		}
+	}
+	
+	@Override
+	public void onDisable() {
+		tm.saveAllData();
 	}
 	
 	private void registerItems() {
@@ -141,6 +150,7 @@ public class Hardcore extends JavaPlugin {
 		core.coreCommands.add(new ShopCommand(core, "Shop"));
 		core.coreCommands.add(new ItemsCommand(core, "Items"));
 		core.coreCommands.add(new BountyCommand(core, "Bounty"));
+		core.coreCommands.add(new TeamCommand(core, "Teams"));
 		
 		core.reregisterCommands(this);
 	}
