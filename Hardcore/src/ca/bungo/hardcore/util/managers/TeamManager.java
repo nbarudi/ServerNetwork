@@ -111,7 +111,7 @@ public class TeamManager {
 				return "This player is not in your team!";
 			this.teamLeader = newLeader.getUniqueId().toString();
 			this.officerUUIDs.add(teamLeader.getUniqueId().toString());
-			announceTeam("&e" + teamLeader.getName() + "&7 Has transfered Team Ownership to &e" + newLeader.getName() + "&7!");
+			announceTeam("&e" + teamLeader.getName() + "&7 Has transferred Team Ownership to &e" + newLeader.getName() + "&7!");
 			saveTeamData();
 			return null;
 		}
