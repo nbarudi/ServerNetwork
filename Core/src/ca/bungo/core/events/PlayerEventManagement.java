@@ -1,5 +1,8 @@
 package ca.bungo.core.events;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -8,11 +11,13 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.permissions.PermissionAttachment;
 
 import ca.bungo.core.api.CoreAPI;
 import ca.bungo.core.api.CoreAPI.PlayerInfo;
 import ca.bungo.core.core.Core;
 import ca.bungo.core.events.CustomEvents.PlayerLevelUpEvent;
+import ca.bungo.core.util.RankUtilities;
 import net.md_5.bungee.api.ChatColor;
 
 public class PlayerEventManagement implements Listener {
@@ -20,6 +25,8 @@ public class PlayerEventManagement implements Listener {
 	CoreAPI cAPI;
 	
 	private Core core;
+	
+	private HashMap<UUID, PermissionAttachment> playerPermissions = new HashMap<UUID, PermissionAttachment>();
 	
 	public PlayerEventManagement(Core core) {
 		cAPI = new CoreAPI(core);
@@ -40,7 +47,17 @@ public class PlayerEventManagement implements Listener {
 			return;
 		}
 		core.logConsole("&3Player Info Found: UUID: &e" + info.uuid + " &3| Username: &a" + info.username + " &3| Level: &a" + info.level + " &3| Rank: &a" + info.rank + " &3| Nickname: " + info.nickname);
-			
+		
+		
+		PermissionAttachment pa = player.addAttachment(core);
+		
+		for(String rank : RankUtilities.permissionNodes.keySet()) {
+			for(String perm : RankUtilities.permissionNodes.get(rank)) {
+				pa.setPermission(perm, true);
+			}
+		}
+		
+		playerPermissions.put(player.getUniqueId(), pa);
 	}
 	
 	@EventHandler
