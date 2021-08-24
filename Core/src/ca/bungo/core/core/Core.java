@@ -16,7 +16,11 @@ import ca.bungo.core.api.CoreAPI;
 import ca.bungo.core.api.CoreAPI.PlayerInfo;
 import ca.bungo.core.cmds.CoreCommands;
 import ca.bungo.core.cmds.Administration.ExperienceCommand;
+import ca.bungo.core.cmds.Administration.GBanCommand;
+import ca.bungo.core.cmds.Administration.GMCommand;
+import ca.bungo.core.cmds.Administration.KickCommand;
 import ca.bungo.core.cmds.Administration.RankCommand;
+import ca.bungo.core.cmds.Administration.ReloadCommand;
 import ca.bungo.core.cmds.Administration.SBanCommand;
 import ca.bungo.core.cmds.Player.InfoCommand;
 import ca.bungo.core.cmds.Player.NameCommand;
@@ -129,7 +133,11 @@ public class Core extends JavaPlugin {
 		coreCommands.add(new InfoCommand(this, "Stats"));
 		coreCommands.add(new NameCommand(this, "Name"));
 		coreCommands.add(new SBanCommand(this, "SBan"));
+		coreCommands.add(new GBanCommand(this, "GBan"));
 		coreCommands.add(new ExperienceCommand(this, "Exp"));
+		coreCommands.add(new ReloadCommand(this, "CReload"));
+		coreCommands.add(new GMCommand(this, "GM"));
+		coreCommands.add(new KickCommand(this, "Kick"));
 		//this.getCommand("").setExecutor(null);
 		
 		for(CoreCommands cmd : coreCommands) {
@@ -158,10 +166,15 @@ public class Core extends JavaPlugin {
 		boolean coreChat = getConfig().getBoolean("core-chat");
 		useCoreChat = coreChat;
 	}
+
 	
 	
 	public void logConsole(String message) {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+	}
+	
+	public void broadcast(String message) {
+		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&9Message> &7" + message));
 	}
 
 	

@@ -18,7 +18,6 @@ public class PermissionsAPI {
 	
 	private HashMap<String, Integer> ranks = new HashMap<String, Integer>(){
 		private static final long serialVersionUID = 1190592294505797551L;
-
 	{
 		put("user", 1);
 		put("user+", 2);

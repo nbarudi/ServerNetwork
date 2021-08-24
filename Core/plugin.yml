@@ -13,5 +13,15 @@ commands:
     usage: /nick
   sban:
     usage: /sban <player> <time> <reason>
+  gban:
+    usage: /gban <player> <time> <reason>
+  kick:
+    usage: /kick <player> <reason>
   exp:
     usage: /exp <player> <add/set/remove> <ammount>
+  creload:
+    usage: /creload
+    aliases: [rl,crl,reload]
+  gm:
+    usage: /gm
+    aliases: [gamemode,gmc,gms,gma,gmsp]
