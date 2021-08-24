@@ -46,7 +46,6 @@ public class PermissionsAPI {
 		cAPI = new CoreAPI(core);
 	}
 	
-	/*
 	public boolean hasPermission(Player player, String rank) {
 		String prnk = cAPI.getPlayerInfo(player).rank;
 		int permLvl = ranks.get(prnk);
@@ -66,60 +65,12 @@ public class PermissionsAPI {
 		int reqLvl = ranks.get(reqLevel);
 		return permLvl >= reqLvl;
 	}
-	*/
-	
-	//Look. I'm aware i could have done this 1000000000000x better
-		//I did this at like 1 AM.. I just wanted it to work, i didn't care if it was shit lol
-		public boolean checkLevelBypass(Player player) {
-			if(player.hasPermission("core.lvlignore100"))
-				return true;
-			else if(player.hasPermission("core.lvlignore95"))
-				return true;
-			else if(player.hasPermission("core.lvlignore90"))
-				return true;
-			else if(player.hasPermission("core.lvlignore85"))
-				return true;
-			else if(player.hasPermission("core.lvlignore80"))
-				return true;
-			else if(player.hasPermission("core.lvlignore75"))
-				return true;
-			else if(player.hasPermission("core.lvlignore70"))
-				return true;
-			else if(player.hasPermission("core.lvlignore65"))
-				return true;
-			else if(player.hasPermission("core.lvlignore60"))
-				return true;
-			else if(player.hasPermission("core.lvlignore55"))
-				return true;
-			else if(player.hasPermission("core.lvlignore50"))
-				return true;
-			else if(player.hasPermission("core.lvlignore45"))
-				return true;
-			else if(player.hasPermission("core.lvlignore40"))
-				return true;
-			else if(player.hasPermission("core.lvlignore35"))
-				return true;
-			else if(player.hasPermission("core.lvlignore30"))
-				return true;
-			else if(player.hasPermission("core.lvlignore25"))
-				return true;
-			else if(player.hasPermission("core.lvlignore20"))
-				return true;
-			else if(player.hasPermission("core.lvlignore15"))
-				return true;
-			else if(player.hasPermission("core.lvlignore10"))
-				return true;
-			else if(player.hasPermission("core.lvlignore5"))
-				return true;
-			return false;
-		}
 	
 	public boolean aboveRank(String currentRank, String minRank) {
 		int permLvl = ranks.get(currentRank);
 		int reqLvl = ranks.get(minRank);
 		return permLvl > reqLvl;
 	}
-	
 	
 	public boolean updateRank(Player player, String rank) {
 		if(cAPI.getPlayerInfo(player) != null) {
