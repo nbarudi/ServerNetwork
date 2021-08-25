@@ -25,3 +25,11 @@ commands:
   gm:
     usage: /gm
     aliases: [gamemode,gmc,gms,gma,gmsp]
+  teleport:
+    usage: /teleport
+    aliases: [tp,tele]
+  whisper:
+    usage: /whisper
+    aliases: [w,msg, tell, reply, r, message]
+  vanish:
+    usage: /vanish

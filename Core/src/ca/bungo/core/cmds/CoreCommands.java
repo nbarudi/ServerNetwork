@@ -52,14 +52,14 @@ public abstract class CoreCommands implements CommandExecutor {
 			if(cAPI.getPlayerInfo(((Player) sender)).level >= requiredLevel) {
 				runCommand(uPermLevel, sender, cmd, label, args);
 			}else {
-				sendResponse(sender, "You do not have permission to run this command!");
+				sendResponse(sender, "You do not have permission to run this command! Level &e" + requiredLevel + " &7required!");
 			}
 			return true;
 		}else {
 			if(pAPI.checkPermission(uPermLevel, permLevel)) {
 				runCommand(uPermLevel, sender, cmd, label, args);
 			}else {
-				sendResponse(sender, "You do not have permission to run this command!");
+				sendResponse(sender, "You do not have permission to run this command! Rank &e" + permLevel + " &7required!");
 			}
 			return true;
 		}

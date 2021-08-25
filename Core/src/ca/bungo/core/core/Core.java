@@ -22,8 +22,11 @@ import ca.bungo.core.cmds.Administration.KickCommand;
 import ca.bungo.core.cmds.Administration.RankCommand;
 import ca.bungo.core.cmds.Administration.ReloadCommand;
 import ca.bungo.core.cmds.Administration.SBanCommand;
+import ca.bungo.core.cmds.Administration.TPCommand;
+import ca.bungo.core.cmds.Administration.VanishCommand;
 import ca.bungo.core.cmds.Player.InfoCommand;
 import ca.bungo.core.cmds.Player.NameCommand;
+import ca.bungo.core.cmds.Player.WhisperCommand;
 import ca.bungo.core.events.ChatEvent;
 import ca.bungo.core.events.PlayerEventManagement;
 import net.md_5.bungee.api.ChatColor;
@@ -138,6 +141,9 @@ public class Core extends JavaPlugin {
 		coreCommands.add(new ReloadCommand(this, "CReload"));
 		coreCommands.add(new GMCommand(this, "GM"));
 		coreCommands.add(new KickCommand(this, "Kick"));
+		coreCommands.add(new TPCommand(this, "Teleport"));
+		coreCommands.add(new WhisperCommand(this, "Whisper"));
+		coreCommands.add(new VanishCommand(this, "Vanish"));
 		//this.getCommand("").setExecutor(null);
 		
 		for(CoreCommands cmd : coreCommands) {
