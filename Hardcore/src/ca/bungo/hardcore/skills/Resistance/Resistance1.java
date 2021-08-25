@@ -28,7 +28,8 @@ public class Resistance1 extends Skill {
 	public void onJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		PlayerData data = hardcore.pm.getPlayerData(player);
-		
+		if(data == null)
+			return;
 		if(!data.hasPerk(this.name) || data.hasHigherPerk(this))
 			return;
 		
@@ -39,6 +40,8 @@ public class Resistance1 extends Skill {
 	public void onRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
 		PlayerData data = hardcore.pm.getPlayerData(player);
+		if(data == null)
+			return;
 		
 		if(!data.hasPerk(this.name) || data.hasHigherPerk(this))
 			return;

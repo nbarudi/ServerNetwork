@@ -22,6 +22,8 @@ public class KeepLevels extends Skill {
 	public void onDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
 		PlayerData data = hardcore.pm.getPlayerData(player);
+		if(data == null)
+			return;
 		
 		if(!data.hasPerk(this.name))
 			return;

@@ -33,3 +33,7 @@ commands:
     aliases: [w,msg, tell, reply, r, message]
   vanish:
     usage: /vanish
+  mute:
+    usage: /mute
+  unmute:
+    usage: /unmute

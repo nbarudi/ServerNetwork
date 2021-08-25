@@ -24,6 +24,8 @@ public class Regen1 extends Skill {
 			return;
 		Player player = (Player) event.getEntity();
 		PlayerData data = hardcore.pm.getPlayerData(player);
+		if(data == null)
+			return;
 		event.setCancelled(true);
 		if(!data.hasPerk(this.name) || data.hasHigherPerk(this))
 			return;

@@ -35,6 +35,8 @@ public class AutoSmelt5 extends Skill {
 	public void onBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		PlayerData data = hardcore.pm.getPlayerData(player);
+		if(data == null)
+			return;
 		if(!data.hasPerk(this.name))
 			return;
 		
