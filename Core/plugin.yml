@@ -18,7 +18,7 @@ commands:
   kick:
     usage: /kick <player> <reason>
   exp:
-    usage: /exp <player> <add/set/remove> <ammount>
+    usage: /exp <player> <add/set/remove> <amount>
   creload:
     usage: /creload
     aliases: [rl,crl,reload]
