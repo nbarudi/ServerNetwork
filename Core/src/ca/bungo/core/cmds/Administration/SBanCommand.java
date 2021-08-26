@@ -247,8 +247,8 @@ public class SBanCommand extends CoreCommands {
 			return pAPI.checkPermission(pRank, "jradmin");
 		else if(seconds <= 7257600) //3 month
 			return pAPI.checkPermission(pRank, "admin");
-		
-		return false;
+		else
+			return pAPI.checkPermission(pRank, "sradmin");
 	}
 
 }

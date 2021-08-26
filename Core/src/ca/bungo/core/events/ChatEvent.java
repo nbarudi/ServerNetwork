@@ -44,6 +44,11 @@ public class ChatEvent implements Listener {
 		if(!info.disguise.isEmpty())
 			playerDetails = "&9" + info.fakeLevel + " " + RankUtilities.ranks.get("user") + " &e" + info.disguise + " &7";
 		
+		if(cAPI.checkMute(player)) {
+			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Chat> &7Sorry you cannot send messages when you are muted!"));
+			return;
+		}
+		
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			p.sendMessage(ChatColor.translateAlternateColorCodes('&', playerDetails + ChatUtilities.checkCensor(event.getMessage())));
 		}

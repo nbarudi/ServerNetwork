@@ -1,5 +1,10 @@
 package ca.bungo.core.events;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,6 +15,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import ca.bungo.core.api.CoreAPI;
+import ca.bungo.core.api.PermissionsAPI;
 import ca.bungo.core.api.CoreAPI.PlayerInfo;
 import ca.bungo.core.core.Core;
 import ca.bungo.core.events.CustomEvents.PlayerLevelUpEvent;
@@ -20,6 +26,8 @@ public class PlayerEventManagement implements Listener {
 	CoreAPI cAPI;
 	
 	private Core core;
+	
+	public static List<String> vanished = new ArrayList<String>();
 	
 	public PlayerEventManagement(Core core) {
 		cAPI = new CoreAPI(core);
@@ -40,7 +48,12 @@ public class PlayerEventManagement implements Listener {
 			return;
 		}
 		core.logConsole("&3Player Info Found: UUID: &e" + info.uuid + " &3| Username: &a" + info.username + " &3| Level: &a" + info.level + " &3| Rank: &a" + info.rank + " &3| Nickname: " + info.nickname);
-			
+		PermissionsAPI pAPI = new PermissionsAPI(core);
+		for(String uuid : vanished) {
+			if(pAPI.aboveRank(cAPI.getPlayerInfo(player).rank, "jradmin"))
+				continue;
+			player.hidePlayer(core, Bukkit.getPlayer(UUID.fromString(uuid)));
+		}
 	}
 	
 	@EventHandler

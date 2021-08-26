@@ -40,16 +40,16 @@ public class CoreAPI {
 		
 		public boolean exists = false;
 		
-		public String uuid = "";
+		public String uuid;
 		public int pid = 0;
-		public String username = "";
+		public String username;
 		public int exp = 0;
-		public int level = 0;
+		public int level = 1;
 		public String rank = "user";
 		
-		public String nickname = "";
+		public String nickname;
 		
-		public String disguise = "";
+		public String disguise;
 		public int fakeLevel = 0;
 		
 		public ArrayList<Integer> tasks = new ArrayList<Integer>();
@@ -85,6 +85,8 @@ public class CoreAPI {
 					this.exists = false;
 					return;
 				}
+			}else {
+				System.out.println("I don't know how you did it.. but you broke something");
 			}
 		}
 		/**
@@ -104,6 +106,7 @@ public class CoreAPI {
 					return;
 				this.level++;
 				this.exp -= reqXP;
+				increaseEXP(0);
 			}
 		}
 		
@@ -128,6 +131,7 @@ public class CoreAPI {
 					return;
 				this.level++;
 				this.exp -= reqXP;
+				increaseEXP(0);
 			}
 		}
 		
@@ -314,6 +318,63 @@ public class CoreAPI {
 		pl.pInfo.remove(info);
 	}
 	
+	public boolean checkMute(Player player) {
+		try(Connection conn = pl.source.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT * FROM corePlayerMutes WHERE uuid = ? AND unmuted = 0")){
+			stmt.setString(1, player.getUniqueId().toString());
+			ResultSet result = stmt.executeQuery();
+			if(!result.next())
+				return false;
+			
+			long endTime = result.getLong(4);
+			if(endTime == 0)
+				return true;
+			if(endTime <= new Date().getTime()) {
+				PreparedStatement ps = conn.prepareStatement("UPDATE corePlayerMutes SET unmuted = 1 WHERE uuid = ?");
+				ps.setString(1, player.getUniqueId().toString());
+				ps.execute();
+				ps.close();
+				return false;
+			}
+			return true;
+		} catch (SQLException e) {
+			pl.logConsole("&4Database Connection Failed!");
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean mutePlayer(Player player, long endTime, String muter) {
+		try(Connection conn = pl.source.getConnection(); 
+				PreparedStatement stmt = conn.prepareStatement("INSERT INTO corePlayerMutes(uuid, username, whomuted, endtime) VALUES(?, ?, ?, ?)")){
+			stmt.setString(1, player.getUniqueId().toString());
+			stmt.setString(2, player.getName());
+			stmt.setString(3, muter);
+			stmt.setLong(4, endTime);
+			
+			stmt.execute();
+			return true;
+			
+			
+		} catch (SQLException e) {
+			pl.logConsole("&4Database Connection Failed!");
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean unmutePlayer(Player target) {
+		try(Connection conn = pl.source.getConnection();
+				PreparedStatement stmt = conn.prepareStatement("UPDATE corePlayerMutes SET unmuted = 1 WHERE uuid = ?")){
+			stmt.setString(1, target.getUniqueId().toString());
+			stmt.execute();
+			return true;
+		} catch (SQLException e) {
+			pl.logConsole("&4Database Connection Failed!");
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public boolean checkBan(Player player) {
 		try(Connection conn = pl.source.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT reason, isglobal, server, endtime FROM corePlayerBans WHERE uuid = ? AND unbanned = 0")){
 			stmt.setString(1, player.getUniqueId().toString());
@@ -330,7 +391,30 @@ public class CoreAPI {
 				return false;
 			
 			Date cDate = new Date();
-			if(cDate.getTime() > endTime) {
+			if(endTime == 0) {
+				StringBuilder message = new StringBuilder();
+				message.append("&7[&bBungo &6Networks&7]\n");
+				message.append("&4You have been banned from this server " + (isGlobal ? "network" : "gamemode") + "!\n");
+				message.append("&7Reason:\n");
+				message.append(bReason + "\n");
+				if(!isGlobal)
+					message.append("&7You are free to join any other gamemode until your ban is up.\n");
+				message.append("&9Your ban will end on:\n");
+				Date endDate = new Date(endTime);
+				
+				//Calendar cal = Calendar.getInstance();
+				//cal.setTime(endDate);
+				if(endTime > 0) {
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy | hh:mm:ss");
+					message.append("&3" + sdf.format(endDate) + "\n");
+				}else {
+					message.append("&cNever!\n");
+				}
+				message.append("&8You are free to submit a ban appeal at: xxxxxxx\n");
+				player.kickPlayer(ChatColor.translateAlternateColorCodes('&', message.toString()));
+				return true;
+			}
+			else if(cDate.getTime() > endTime) {
 				PreparedStatement ps = conn.prepareStatement("UPDATE corePlayerBans SET unbanned = 1 WHERE uuid = ? AND server = ?");
 				ps.setString(1, player.getUniqueId().toString());
 				ps.setString(2, pl.getConfig().getString("server-id"));
@@ -384,7 +468,29 @@ public class CoreAPI {
 				return null;
 			
 			Date cDate = new Date();
-			if(cDate.getTime() > endTime) {
+			if(endTime == 0) {
+				StringBuilder message = new StringBuilder();
+				message.append("&7[&bBungo &6Networks&7]\n");
+				message.append("&4You have been banned from this server " + (isGlobal ? "network" : "gamemode") + "!\n");
+				message.append("&7Reason:\n");
+				message.append(bReason + "\n");
+				if(!isGlobal)
+					message.append("&7You are free to join any other gamemode until your ban is up.\n");
+				message.append("&9Your ban will end on:\n");
+				Date endDate = new Date(endTime);
+				
+				//Calendar cal = Calendar.getInstance();
+				//cal.setTime(endDate);
+				if(endTime > 0) {
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy | hh:mm:ss");
+					message.append("&3" + sdf.format(endDate) + "\n");
+				}else {
+					message.append("&cNever!\n");
+				}
+				message.append("&8You are free to submit a ban appeal at: xxxxxxx\n");
+				return message.toString();
+			}
+			else if(cDate.getTime() > endTime) {
 				PreparedStatement ps = conn.prepareStatement("UPDATE corePlayerBans SET unbanned = 1 WHERE uuid = ? AND server = ?");
 				ps.setString(1, uuid);
 				ps.setString(2, pl.getConfig().getString("server-id"));

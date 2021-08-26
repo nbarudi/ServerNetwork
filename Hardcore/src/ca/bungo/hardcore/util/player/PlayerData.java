@@ -27,6 +27,8 @@ public class PlayerData {
 	
 	public PlayerInfo pInfo;
 	
+	public int xpBounty = 0;
+	
 	Hardcore hardcore;
 	
 	public PlayerData(Hardcore hardcore, String username, String uuid) {
@@ -49,6 +51,8 @@ public class PlayerData {
 		reviveTime = hardcore.getConfig().getLong("Players." + uuid + ".reviveTime");
 		
 		ownedPerks = hardcore.getConfig().getStringList("Players." + uuid + ".perks");
+		
+		xpBounty = hardcore.getConfig().getInt("Players." + uuid + ".xpbounty");
 	}
 	
 	

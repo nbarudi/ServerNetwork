@@ -1,8 +1,13 @@
 package ca.bungo.hardcore.util.managers;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -39,6 +44,7 @@ public class PlayerManager {
 			cfgSec.set("spentPoints" , 0);
 			cfgSec.set("reviveTime", 0);
 			cfgSec.set("perks", new ArrayList<String>());
+			cfgSec.set("xpbounty", 0);
 			hardcore.saveConfig();
 		}
 		
@@ -54,6 +60,7 @@ public class PlayerManager {
 		cfgSec.set("spentPoints" , data.maxSkillPoints - data.skillPoints);
 		cfgSec.set("reviveTime", data.reviveTime);
 		cfgSec.set("perks", data.ownedPerks);
+		cfgSec.set("xpbounty", data.xpBounty);
 		hardcore.saveConfig();
 	}
 	
@@ -83,6 +90,26 @@ public class PlayerManager {
 				return;
 			}
 		}
+	}
+	
+	public Map<String, Integer> getBounties(){
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		ConfigurationSection cfgSec = hardcore.getConfig().getConfigurationSection("Players");
+		for(String key : cfgSec.getKeys(false)) {
+			if(cfgSec.getInt(key + ".xpbounty") <= 0)
+				continue;
+			map.put(cfgSec.getString(key + ".username"), cfgSec.getInt(key + ".xpbounty"));
+		}
+		
+		Comparator<Entry<String, Integer>> cc = Entry.comparingByValue();
+		cc.reversed();
+		
+		Map<String, Integer> sortedMap = 
+			     map.entrySet().stream()
+			    .sorted(cc)
+			    .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
+			                              (e1, e2) -> e1, LinkedHashMap::new));
+		return sortedMap;
 	}
 	
 	

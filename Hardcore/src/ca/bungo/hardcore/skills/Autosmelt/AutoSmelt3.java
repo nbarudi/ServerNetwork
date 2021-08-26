@@ -35,6 +35,8 @@ public class AutoSmelt3 extends Skill {
 	public void onBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		PlayerData data = hardcore.pm.getPlayerData(player);
+		if(data == null)
+			return;
 		if(!data.hasPerk(this.name) || data.hasHigherPerk(this))
 			return;
 		

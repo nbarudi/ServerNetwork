@@ -16,10 +16,19 @@ import ca.bungo.core.api.CoreAPI;
 import ca.bungo.core.api.CoreAPI.PlayerInfo;
 import ca.bungo.core.cmds.CoreCommands;
 import ca.bungo.core.cmds.Administration.ExperienceCommand;
+import ca.bungo.core.cmds.Administration.GBanCommand;
+import ca.bungo.core.cmds.Administration.GMCommand;
+import ca.bungo.core.cmds.Administration.KickCommand;
+import ca.bungo.core.cmds.Administration.MuteCommand;
 import ca.bungo.core.cmds.Administration.RankCommand;
+import ca.bungo.core.cmds.Administration.ReloadCommand;
 import ca.bungo.core.cmds.Administration.SBanCommand;
+import ca.bungo.core.cmds.Administration.TPCommand;
+import ca.bungo.core.cmds.Administration.UnMuteCommand;
+import ca.bungo.core.cmds.Administration.VanishCommand;
 import ca.bungo.core.cmds.Player.InfoCommand;
 import ca.bungo.core.cmds.Player.NameCommand;
+import ca.bungo.core.cmds.Player.WhisperCommand;
 import ca.bungo.core.events.ChatEvent;
 import ca.bungo.core.events.PlayerEventManagement;
 import net.md_5.bungee.api.ChatColor;
@@ -129,7 +138,16 @@ public class Core extends JavaPlugin {
 		coreCommands.add(new InfoCommand(this, "Stats"));
 		coreCommands.add(new NameCommand(this, "Name"));
 		coreCommands.add(new SBanCommand(this, "SBan"));
+		coreCommands.add(new GBanCommand(this, "GBan"));
 		coreCommands.add(new ExperienceCommand(this, "Exp"));
+		coreCommands.add(new ReloadCommand(this, "CReload"));
+		coreCommands.add(new GMCommand(this, "GM"));
+		coreCommands.add(new KickCommand(this, "Kick"));
+		coreCommands.add(new TPCommand(this, "Teleport"));
+		coreCommands.add(new WhisperCommand(this, "Whisper"));
+		coreCommands.add(new VanishCommand(this, "Vanish"));
+		coreCommands.add(new MuteCommand(this, "Mute"));
+		coreCommands.add(new UnMuteCommand(this, "UnMute"));
 		//this.getCommand("").setExecutor(null);
 		
 		for(CoreCommands cmd : coreCommands) {
@@ -158,10 +176,15 @@ public class Core extends JavaPlugin {
 		boolean coreChat = getConfig().getBoolean("core-chat");
 		useCoreChat = coreChat;
 	}
+
 	
 	
 	public void logConsole(String message) {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+	}
+	
+	public void broadcast(String message) {
+		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&9Message> &7" + message));
 	}
 
 	

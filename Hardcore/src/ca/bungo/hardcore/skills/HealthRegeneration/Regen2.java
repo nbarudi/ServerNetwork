@@ -22,6 +22,8 @@ public class Regen2 extends Skill {
 	public void onFoodChange(FoodLevelChangeEvent event) {
 		Player player = (Player) event.getEntity();
 		PlayerData data = hardcore.pm.getPlayerData(player);
+		if(data == null)
+			return;
 		if(!data.hasPerk(this.name) || data.hasHigherPerk(this))
 			return;
 		
