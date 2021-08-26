@@ -16,3 +16,5 @@ commands:
     usage: /bounty
   teams:
     usage: /teams
+  help:
+    usage: /help

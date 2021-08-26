@@ -14,6 +14,7 @@ import ca.bungo.core.api.EconomyAPI;
 import ca.bungo.core.api.PermissionsAPI;
 import ca.bungo.core.core.Core;
 import ca.bungo.hardcore.cmds.BountyCommand;
+import ca.bungo.hardcore.cmds.HelpCommand;
 import ca.bungo.hardcore.cmds.ItemsCommand;
 import ca.bungo.hardcore.cmds.PerksCommand;
 import ca.bungo.hardcore.cmds.ReviveCommand;
@@ -38,6 +39,7 @@ import ca.bungo.hardcore.skills.Autosmelt.AutoSmelt5;
 import ca.bungo.hardcore.skills.HealthRegeneration.Regen1;
 import ca.bungo.hardcore.skills.Keep.KeepInventory;
 import ca.bungo.hardcore.skills.Keep.KeepLevels;
+import ca.bungo.hardcore.util.HelpUtility;
 import ca.bungo.hardcore.util.managers.ItemManager;
 import ca.bungo.hardcore.util.managers.PlayerManager;
 import ca.bungo.hardcore.util.managers.TeamManager;
@@ -56,6 +58,7 @@ public class Hardcore extends JavaPlugin {
 	public PlayerManager pm;
 	public ItemManager itm;
 	public TeamManager tm;
+	public HelpUtility hu;
 	
 	public ArrayList<Skill> skills = new ArrayList<Skill>();
 	
@@ -79,6 +82,8 @@ public class Hardcore extends JavaPlugin {
 		pm = new PlayerManager(this);
 		itm = new ItemManager(this);
 		tm = new TeamManager(this);
+		hu = new HelpUtility();
+		
 		
 		registerConfigs();
 		registerItems();
@@ -151,6 +156,7 @@ public class Hardcore extends JavaPlugin {
 		core.coreCommands.add(new ItemsCommand(core, "Items"));
 		core.coreCommands.add(new BountyCommand(core, "Bounty"));
 		core.coreCommands.add(new TeamCommand(core, "Teams"));
+		core.coreCommands.add(new HelpCommand(core, "Help"));
 		
 		core.reregisterCommands(this);
 	}
