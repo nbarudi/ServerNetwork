@@ -44,7 +44,7 @@ The Shop! (Hover: Execute Command /shop)
 Inside of the shop you will find 2 sections!
 One of these sections sells items that cost Skill Points
    Inside of this shop is where you will be able to purchase lives!
-   Lives each cost 3 skill points (Hover: Atleast at the time of writing this)
+   Lives each cost 3 skill points (Hover: At least at the time of writing this)
    Purchasing some items will require you to have a level requirement. (Hover: Levels are gained from killing Mobs/Players)
    Your level will show in chat or through the Stats Command (Hover: Execute /stats command)
 
@@ -92,7 +92,7 @@ Every time you kill a player, your bounty is constantly increased!
 As your bounty increases players will be given more information to find you.
 Players can claim the bounty on your head by killing you!
 
-You're required to be atleast level 5 to view players bounties!
+You're required to be at least level 5 to view players bounties!
 
 Notes: TEAMS CANNOT CLAIM BOUNTIES OF OTHER TEAMMATES
 
@@ -100,7 +100,7 @@ Notes: TEAMS CANNOT CLAIM BOUNTIES OF OTHER TEAMMATES
 
 [Crafting]
 
-Majority of custom items have crafting recipies!
+Majority of custom items have crafting recipes!
 Although they are not easy to create crafting items tend to be easier
 then purchasing them from the Shop.
 
