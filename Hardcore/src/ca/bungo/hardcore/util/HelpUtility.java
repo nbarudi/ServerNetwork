@@ -28,6 +28,10 @@ public class HelpUtility {
 		setupCategories();
 		setupMainComp();
 		setupInfoComp();
+		setupSkillPointComp();
+		setupCreditsComp();
+		setupBountiesComp();
+		setupCraftingComp();
 	}
 	
 	private void setupCategories() {
@@ -130,9 +134,196 @@ public class HelpUtility {
 				+ "   Simple! Just wait! If you lose all your lives just wait!\n"
 				+ "   You will automatically be revived after a set amount of time!\n"
 				+ "   Then you are free to rejoin the server and you can\n"
-				+ "   Craft/Buy more lives!");
+				+ "   Craft/Buy more lives!\n\n");
 		s1.setColor(ChatColor.AQUA);
+		
+		s2 = new TextComponent("So what do you have to keep in mind?\n");
+		s2.setColor(ChatColor.YELLOW);
+		
+		s3 = new TextComponent("Every time you lose all your lives your time to revive\nincreases!\n"
+				+ "The starting time for a revive is 12 hours.\n"
+				+ "Each time you lose all lives, this time increases by 12 hours.\n\n");
+		s3.setColor(ChatColor.AQUA);
+		
 		infoComp.addExtra(s1);
+		infoComp.addExtra(s2);
+		infoComp.addExtra(s3);
+		
+		s1 = new TextComponent("Dont want to wait for your time limit? Well we have a solution to\nthat to!\n"
+				+ "Take a run to our website to learn more!");
+		s1.setColor(ChatColor.YELLOW);
+		
+		s2 = new TextComponent(" xxxxxxxxxx");
+		s2.setColor(ChatColor.LIGHT_PURPLE);
+		s2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Open our website!")));
+		s2.setClickEvent(new ClickEvent(Action.OPEN_URL, "https://google.ca"));
+		
+		infoComp.addExtra(s1);
+		infoComp.addExtra(s2);
+	}
+	
+	private void setupSkillPointComp() {
+		skillPointsComp = new TextComponent();
+		
+		TextComponent s1;
+		TextComponent s2;
+		TextComponent s3;
+		
+		s1 = new TextComponent("[Skill Points]\n\n");
+		s1.setColor(ChatColor.GREEN);
+		s1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Everything you need to know about Skill Points!")));
+		
+		s2 = new TextComponent("The Shop!\n\n");
+		s2.setColor(ChatColor.RED);
+		s2.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/shop"));
+		s2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Execute /shop command")));
+		
+		s3 = new TextComponent("Inside of the shop you will find 2 sections!\n"
+				+ "One of these sections sells items that cost Skill Points\n"
+				+ "   Inside of this shop is where you will be able to purchase\n   lives!\n");
+		s3.setColor(ChatColor.AQUA);
+		
+		skillPointsComp.addExtra(s1);
+		skillPointsComp.addExtra(s2);
+		skillPointsComp.addExtra(s3);
+		
+		s1 = new TextComponent("   Lives each cost 3 skill points\n");
+		s1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Atleast at the time of writing this")));
+		s1.setColor(ChatColor.AQUA);
+		
+		s2 = new TextComponent("   Purchasing some items will require you to have a level\n   requirement.\n");
+		s2.setColor(ChatColor.AQUA);
+		s2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Levels are gained from killing Mobs/Players")));
+		
+		s3 = new TextComponent("   Your level will show in chat or through the Stats Command.\n\n");
+		s3.setColor(ChatColor.AQUA);
+		s3.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Execute /stats command")));
+		s3.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/stats"));
+		
+		skillPointsComp.addExtra(s1);
+		skillPointsComp.addExtra(s2);
+		skillPointsComp.addExtra(s3);
+		
+		s1 = new TextComponent("Perks!\n\n");
+		s1.setColor(ChatColor.RED);
+		s1.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/perks"));
+		s1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Execute /perks command")));
+		
+		s2 = new TextComponent("Welcome to the perk system!\n");
+		s2.setColor(ChatColor.YELLOW);
+		s3 = new TextComponent("Perks are this servers way of rewarding players for grinding\nlevels!\n"
+				+ "   Each perk has its own cost and function\n"
+				+ "   There are many perks that will keep you leveling for a longn   time!\n"
+				+ "   This way you will always have a goal to keep grinding levels!\n"
+				+ "Locked Perks\n"
+				+ "   Some perks will only be given a codename!\n"
+				+ "   As time goes on we will be adding more perks\n"
+				+ "   As well we will enable some of the ones we have hidden away!");
+		s3.setColor(ChatColor.AQUA);
+		
+		skillPointsComp.addExtra(s1);
+		skillPointsComp.addExtra(s2);
+		skillPointsComp.addExtra(s3);
+	}
+	
+	private void setupCreditsComp() {
+		creditsComp = new TextComponent();
+		
+		TextComponent s1;
+		TextComponent s2;
+		TextComponent s3;
+		
+		s1 = new TextComponent("[Credits]\n");
+		s1.setColor(ChatColor.GREEN);
+		s1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Everything you need to know about credits!")));
+		
+		s2 = new TextComponent("Credits are the second form of in game currency!\n"
+				+ "You earn credits at the same rate as experience!\n"
+				+ "Credits are used for many different things!\n"
+				+ "They function the same as any servers economy allowing you\nto buy and sell from other players.\n");
+		s2.setColor(ChatColor.YELLOW);
+		
+		s3 = new TextComponent("Player Shops\n"
+				+ "   You have the ability to run your own shop!\n"
+				+ "   You are free to sell any item you want to!\n"
+				+ "   From Lives, Enchantment Books, Mob Spawners.\n"
+				+ "   Anything you want you are free to sell for what ever cost\n   you see fit.\n\n"
+				+ "   Shops are rented in the Community Mall.\n"
+				+ "   It'll get harder to find open stalls as time goes on so if you\n   have an idea\n"
+				+ "   There is no need to wait!\n\n");
+		s3.setColor(ChatColor.AQUA);
+		
+		creditsComp.addExtra(s1);
+		creditsComp.addExtra(s2);
+		creditsComp.addExtra(s3);
+		
+		s1 = new TextComponent("The Shop!\n\n");
+		s1.setColor(ChatColor.RED);
+		s1.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/shop"));
+		s1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Execute /shop command")));
+		
+		s2 = new TextComponent("Inside of the shop you will find 2 sections!\n");
+		s2.setColor(ChatColor.YELLOW);
+		
+		s3 = new TextComponent("One of these sections sells items that cost Credits!\n"
+				+ "   Inside of the shop is where you can purchase BindingAgents\n"
+				+ "   The main crafting ingredient for the majority of custom\n   items\n"
+				+ "   You can also purchase more Land Claim Blocks from the\n   shop");
+		s3.setColor(ChatColor.AQUA);
+		
+		creditsComp.addExtra(s1);
+		creditsComp.addExtra(s2);
+		creditsComp.addExtra(s3);
+	}
+	
+	private void setupBountiesComp() {
+		bountiesComp = new TextComponent();
+		
+		TextComponent s1;
+		TextComponent s2;
+		TextComponent s3;
+		
+		s1 = new TextComponent("[Bounties]\n");
+		s1.setColor(ChatColor.GREEN);
+		s1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Execute /bounty command")));
+		s1.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/bounty"));
+		
+		s2 = new TextComponent("The server has a bounty system for those who are Player\nKillers!\n"
+				+ "Every time you kill a player, your bounty is constantly\nincreased!\n"
+				+ "As your bounty increases players will be given more\ninformation to find you.\n"
+				+ "Players can claim the bounty on your head by killing you!\n\n");
+		s2.setColor(ChatColor.YELLOW);
+		
+		s3 = new TextComponent("You're required to be atleast level 5 to view players bounties!\n\n"
+				+ "Notes: TEAMS CANNOT CLAIM BOUNTIES OF OTHER TEAMMATES");
+		s3.setColor(ChatColor.RED);
+		
+		bountiesComp.addExtra(s1);
+		bountiesComp.addExtra(s2);
+		bountiesComp.addExtra(s3);
+	}
+	
+	private void setupCraftingComp() {
+		craftingComp = new TextComponent();
+		
+		TextComponent s1;
+		TextComponent s2;
+		TextComponent s3;
+		
+		s1 = new TextComponent("[Crafting]\n");
+		s1.setColor(ChatColor.GREEN);
+		
+		s2 = new TextComponent("Majority of custom items have crafting recipies!\n"
+				+ "Although they are not easy to create crafting items tend to be\neasier\n"
+				+ "then purchasing them from the Shop.\n\n");
+		s2.setColor(ChatColor.YELLOW);
+		
+		s3 = new TextComponent("Many crafting recipes are located in your recipe book where you can see what you require.");
+		s3.setColor(ChatColor.RED);
+		
+		craftingComp.addExtra(s1);
+		craftingComp.addExtra(s2);
+		craftingComp.addExtra(s3);
 	}
 
 }

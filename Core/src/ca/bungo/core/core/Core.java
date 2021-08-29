@@ -84,6 +84,7 @@ public class Core extends JavaPlugin {
 	public ArrayList<PlayerInfo> pInfo = new ArrayList<>();
 	
 	public ArrayList<CoreCommands> coreCommands = new ArrayList<>();
+	public ArrayList<CoreCommands> helpList = new ArrayList<>();
 	public boolean useCoreChat = true;
 	
 	public MysqlDataSource source;
@@ -157,6 +158,7 @@ public class Core extends JavaPlugin {
 				logConsole("&4Failed to register command: &e" + cmd.name);
 			}
 		}
+		helpList.addAll(coreCommands);
 		coreCommands.clear();
 	}
 	
@@ -169,6 +171,7 @@ public class Core extends JavaPlugin {
 				logConsole("&4Failed to register command: &e" + cmd.name);
 			}
 		}
+		helpList.addAll(coreCommands);
 		coreCommands.clear();
 	}
 	

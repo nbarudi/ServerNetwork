@@ -89,7 +89,7 @@ public class PlayerData {
 		if(this.lives <= 0) {
 			this.lives = 0;
 			int totalDeaths = hardcore.getConfig().getInt("Players." + uuid + ".fullDeaths");
-			int hours = (totalDeaths*24) + 24;
+			int hours = (totalDeaths*12) + 12;
 			long seconds = (hours*60*60);
 			this.reviveTime = new Date().getTime() + (seconds*1000);
 			
