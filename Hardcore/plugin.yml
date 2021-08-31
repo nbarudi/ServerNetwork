@@ -18,3 +18,5 @@ commands:
     usage: /teams
   help:
     usage: /help
+  test:
+    usage: /test
