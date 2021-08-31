@@ -30,6 +30,7 @@ import ca.bungo.hardcore.items.GeneralItems.LifeEggItem;
 import ca.bungo.hardcore.items.ShopItems.Credits.BindingAgentItem;
 import ca.bungo.hardcore.items.ShopItems.Credits.ExtraClaimsItem;
 import ca.bungo.hardcore.items.ShopItems.SP.ExtraLifeItem;
+import ca.bungo.hardcore.items.ShopItems.SP.MinersIntuition1;
 import ca.bungo.hardcore.skills.Skill;
 import ca.bungo.hardcore.skills.Unlock;
 import ca.bungo.hardcore.skills.Autosmelt.AutoSmelt1;
@@ -115,6 +116,7 @@ public class Hardcore extends JavaPlugin {
 		
 		//Skill-Point Items
 		itm.addItem(new ExtraLifeItem(this, "Extra Life", Material.TOTEM_OF_UNDYING));
+		itm.addItem(new MinersIntuition1(this, "Miners Intuition 1", Material.COMPASS));
 	}
 	
 	private void registerSkills() {

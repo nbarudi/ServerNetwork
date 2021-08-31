@@ -75,6 +75,7 @@ public class PlayerEvents implements Listener {
 		player.discoverRecipe(NamespacedKey.fromString("lifeegg", hardcore));
 		player.discoverRecipe(NamespacedKey.fromString("extraclaims", hardcore));
 		player.discoverRecipe(NamespacedKey.fromString("extralife", hardcore));
+		player.discoverRecipe(NamespacedKey.fromString("minersintuition1", hardcore));
 	}
 	
 	@EventHandler
