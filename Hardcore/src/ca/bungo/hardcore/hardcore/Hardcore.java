@@ -27,7 +27,12 @@ import ca.bungo.hardcore.events.LevelingEvents;
 import ca.bungo.hardcore.events.PlayerEvents;
 import ca.bungo.hardcore.items.CustomItem;
 import ca.bungo.hardcore.items.GeneralItems.ChargedHeart;
+import ca.bungo.hardcore.items.GeneralItems.Fortune4Item;
+import ca.bungo.hardcore.items.GeneralItems.Fortune5Item;
+import ca.bungo.hardcore.items.GeneralItems.Fortune6Item;
 import ca.bungo.hardcore.items.GeneralItems.LifeEggItem;
+import ca.bungo.hardcore.items.GeneralItems.MinersIntuition2;
+import ca.bungo.hardcore.items.GeneralItems.MinersIntuition3;
 import ca.bungo.hardcore.items.ShopItems.Credits.BindingAgentItem;
 import ca.bungo.hardcore.items.ShopItems.Credits.ExtraClaimsItem;
 import ca.bungo.hardcore.items.ShopItems.SP.ExtraLifeItem;
@@ -113,17 +118,19 @@ public class Hardcore extends JavaPlugin {
 	}
 	
 	private void registerItems() {
-		//Normal Items
 		itm.addItem(new LifeEggItem(this, "Life Egg", Material.VILLAGER_SPAWN_EGG));
 		itm.addItem(new ChargedHeart(this, "Charged Heart", Material.POPPY));
 		
-		//Credit Items
 		itm.addItem(new BindingAgentItem(this, "Binding Agent", Material.SNOWBALL));
 		itm.addItem(new ExtraClaimsItem(this, "Extra Claims", Material.GRASS_BLOCK));
 		
-		//Skill-Point Items
 		itm.addItem(new ExtraLifeItem(this, "Extra Life", Material.TOTEM_OF_UNDYING));
 		itm.addItem(new MinersIntuition1(this, "Miners Intuition 1", Material.COMPASS));
+		itm.addItem(new MinersIntuition2(this, "Miners Intuition 2", Material.COMPASS));
+		itm.addItem(new MinersIntuition3(this, "Miners Intuition 3", Material.COMPASS));
+		itm.addItem(new Fortune4Item(this, "Fortune 4", Material.ENCHANTED_BOOK));
+		itm.addItem(new Fortune5Item(this, "Fortune 5", Material.ENCHANTED_BOOK));
+		itm.addItem(new Fortune6Item(this, "Fortune 6", Material.ENCHANTED_BOOK));
 	}
 	
 	private void registerSkills() {

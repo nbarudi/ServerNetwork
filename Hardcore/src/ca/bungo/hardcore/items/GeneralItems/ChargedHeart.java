@@ -12,6 +12,7 @@ import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -66,6 +67,17 @@ public class ChargedHeart extends CustomItem {
 		hardcore.mu.spawnMob(player, loc);
 		entity.remove();
 		
+	}
+	
+	@EventHandler
+	public void onEntityTarget(EntityTargetLivingEntityEvent event) {
+		Entity ent = event.getEntity();
+		if(ent.getCustomName() == null)
+			return;
+		if(!(ent instanceof IronGolem) && !ent.getCustomName().substring(2).equals("Angered Golem"))
+			return;
+		if(!(event.getTarget() instanceof Player))
+			event.setCancelled(true);
 	}
 	
 	

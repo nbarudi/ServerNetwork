@@ -1,4 +1,4 @@
-package ca.bungo.hardcore.items.ShopItems.SP;
+package ca.bungo.hardcore.items.GeneralItems;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,41 +20,31 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import ca.bungo.hardcore.hardcore.Hardcore;
 import ca.bungo.hardcore.items.CustomItem;
-import ca.bungo.hardcore.util.managers.ItemManager.ShopType;
 
-public class MinersIntuition1 extends CustomItem{
+public class MinersIntuition2 extends CustomItem{
 	
-	public MinersIntuition1(Hardcore hardcore, String name, Material item) {
+	public MinersIntuition2(Hardcore hardcore, String name, Material item) {
 		super(hardcore, name, item);
-		this.description = "&eUse your miners intuition to find ores! &7(7x7 Area)";
-		this.shopName = name;
-		this.isBuyable = true;
-		this.st = ShopType.SP;
-		this.cost = 6;
-		this.reqLevel = 20;
-		this.requiresLevel = true;
-		
 		
 		ItemMeta meta = this.getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + "Miners Intuition (Tier 1)");
+		meta.setDisplayName(ChatColor.GREEN + "Miners Intuition (Tier 2)");
 		meta.addEnchant(Enchantment.ARROW_INFINITE, -1, true);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		List<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.translateAlternateColorCodes('&', "&eUse your miners intuition to find ores! &7(7x7 Area)"));
+		lore.add(ChatColor.translateAlternateColorCodes('&', "&eUse your miners intuition to find ores! &7(14x14 Area)"));
 		meta.setLore(lore);
 		this.setItemMeta(meta);
 		
 		
-		ShapedRecipe sr = new ShapedRecipe(new NamespacedKey(hardcore, "minersintuition1"), this);
+		ShapedRecipe sr = new ShapedRecipe(new NamespacedKey(hardcore, "minersintuition2"), this);
 		sr.shape("BDB", 
-				 "ICG", 
+				 "HCH", 
 				 "BEB");
 		sr.setIngredient('B', new RecipeChoice.ExactChoice(hardcore.itm.getItem("Binding Agent")));
 		sr.setIngredient('D', Material.DIAMOND_BLOCK);
-		sr.setIngredient('I', Material.IRON_BLOCK);
-		sr.setIngredient('G', Material.GOLD_BLOCK);
+		sr.setIngredient('H', new RecipeChoice.ExactChoice(hardcore.itm.getItem("Charged Heart")));
 		sr.setIngredient('E', Material.EMERALD_BLOCK);
-		sr.setIngredient('C', Material.COMPASS);
+		sr.setIngredient('C', new RecipeChoice.ExactChoice(hardcore.itm.getItem("Miners Intuition 1")));
 		
 		Bukkit.addRecipe(sr);
 	}
@@ -74,14 +64,14 @@ public class MinersIntuition1 extends CustomItem{
 				
 				Location pLoc = player.getLocation();
 				
-				for(int x = -3; x < 4; x++)
-					for(int y = -3; y < 4; y++)
-						for(int z = -3; z < 4; z++) {
+				for(int x = -7; x < 8; x++)
+					for(int y = -7; y < 8; y++)
+						for(int z = -7; z < 8; z++) {
 							Location loc = new Location(pLoc.getWorld(), pLoc.getBlockX() + x + 0.5, pLoc.getBlockY() + y + 0.5, pLoc.getBlockZ() + z + 0.5);
 							Hardcore.hardcore.bu.glowBlockNMS(player, loc);
 						}
 				
-				hardcore.cm.giveCooldown(player, "MinersIntuition", 15);
+				hardcore.cm.giveCooldown(player, "MinersIntuition", 12);
 				
 			}
 		

@@ -2,6 +2,7 @@ package ca.bungo.hardcore.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,7 +22,7 @@ public class MobUtility {
 	
 	//Reflection Stuff
 	Class<?> EntityIronGolem, CraftEntity, EntityInsistant, EntityLiving, CraftPlayer;
-	Method ceGetHandle, cpGetHandle;
+	Method ceGetHandle, cpGetHandle, cwGetHandle;
 	
 	
 	public MobUtility(Hardcore hardcore) {
@@ -54,6 +55,7 @@ public class MobUtility {
 		Object nav, eig;
 		try {
 			eig = ceGetHandle.invoke(CraftEntity.cast(golem));
+			
 			nav = EntityInsistant.getDeclaredMethod("getNavigation").invoke(eig);
 			setNav = nav.getClass().getSuperclass().getDeclaredMethod("a", double.class, double.class, double.class, double.class);
 			setGoalTarget = EntityInsistant.getDeclaredMethod("setGoalTarget", EntityLiving, TargetReason.class, boolean.class);
@@ -74,6 +76,23 @@ public class MobUtility {
 				return;
 			}
 		}, 20, 20);
+		
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(hardcore, ()->{
+			if(golem.isDead())
+				return;
+			
+			Location gloc = golem.getLocation();
+			
+			Random rnd = new Random();
+			int amount = rnd.nextInt(3) + 1;
+			
+			for(int i = 0; i < amount; i++)
+				gloc.getWorld().spawnEntity(gloc, EntityType.VEX);
+			
+			
+			gloc.setY(gloc.getY() + 20);
+			gloc.getWorld().strikeLightning(gloc);
+		}, 120, 120);
 		
 		golem.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 9999999, 1));
 	}
