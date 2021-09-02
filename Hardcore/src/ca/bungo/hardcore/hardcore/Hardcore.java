@@ -26,6 +26,7 @@ import ca.bungo.hardcore.events.InventoryShopHandler;
 import ca.bungo.hardcore.events.LevelingEvents;
 import ca.bungo.hardcore.events.PlayerEvents;
 import ca.bungo.hardcore.items.CustomItem;
+import ca.bungo.hardcore.items.GeneralItems.ChargedHeart;
 import ca.bungo.hardcore.items.GeneralItems.LifeEggItem;
 import ca.bungo.hardcore.items.ShopItems.Credits.BindingAgentItem;
 import ca.bungo.hardcore.items.ShopItems.Credits.ExtraClaimsItem;
@@ -43,6 +44,8 @@ import ca.bungo.hardcore.skills.Keep.KeepInventory;
 import ca.bungo.hardcore.skills.Keep.KeepLevels;
 import ca.bungo.hardcore.util.BlockUtility;
 import ca.bungo.hardcore.util.HelpUtility;
+import ca.bungo.hardcore.util.MobUtility;
+import ca.bungo.hardcore.util.managers.CooldownManager;
 import ca.bungo.hardcore.util.managers.ItemManager;
 import ca.bungo.hardcore.util.managers.PlayerManager;
 import ca.bungo.hardcore.util.managers.TeamManager;
@@ -63,6 +66,8 @@ public class Hardcore extends JavaPlugin {
 	public TeamManager tm;
 	public HelpUtility hu;
 	public BlockUtility bu;
+	public CooldownManager cm;
+	public MobUtility mu;
 	
 	public ArrayList<Skill> skills = new ArrayList<Skill>();
 	
@@ -88,7 +93,8 @@ public class Hardcore extends JavaPlugin {
 		tm = new TeamManager(this);
 		hu = new HelpUtility();
 		bu = new BlockUtility(this);
-		
+		cm = new CooldownManager(this);
+		mu = new MobUtility(this);
 		
 		registerConfigs();
 		registerItems();
@@ -109,6 +115,7 @@ public class Hardcore extends JavaPlugin {
 	private void registerItems() {
 		//Normal Items
 		itm.addItem(new LifeEggItem(this, "Life Egg", Material.VILLAGER_SPAWN_EGG));
+		itm.addItem(new ChargedHeart(this, "Charged Heart", Material.POPPY));
 		
 		//Credit Items
 		itm.addItem(new BindingAgentItem(this, "Binding Agent", Material.SNOWBALL));

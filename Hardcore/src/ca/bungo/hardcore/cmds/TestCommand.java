@@ -25,16 +25,7 @@ public class TestCommand extends CoreCommands {
 		
 		Location pLoc = player.getLocation();
 		
-		for(int x = -10; x < 11; x++)
-			for(int y = -10; y < 11; y++)
-				for(int z = -10; z < 11; z++) {
-					Location loc = new Location(pLoc.getWorld(), pLoc.getBlockX() + x + 0.5, pLoc.getBlockY() + y + 0.5, pLoc.getBlockZ() + z + 0.5);
-					//Hardcore.hardcore.bu.glowBlock(loc);
-					Hardcore.hardcore.bu.glowBlockNMS(player, loc);
-				}
-		
-		
-
+		Hardcore.hardcore.mu.spawnMob(player, pLoc);
 	}
 
 }

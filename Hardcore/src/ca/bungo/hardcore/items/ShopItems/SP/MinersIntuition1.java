@@ -1,8 +1,5 @@
 package ca.bungo.hardcore.items.ShopItems.SP;
 
-import java.util.ArrayList;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,12 +19,10 @@ import ca.bungo.hardcore.items.CustomItem;
 import ca.bungo.hardcore.util.managers.ItemManager.ShopType;
 
 public class MinersIntuition1 extends CustomItem{
-
-	private ArrayList<String> cooldown = new ArrayList<String>();
 	
 	public MinersIntuition1(Hardcore hardcore, String name, Material item) {
 		super(hardcore, name, item);
-		this.description = "Use your miners intuition to find ores!";
+		this.description = "&eUse your miners intuition to find ores! &7(7x7 Area)";
 		this.shopName = name;
 		this.isBuyable = true;
 		this.st = ShopType.SP;
@@ -64,11 +59,10 @@ public class MinersIntuition1 extends CustomItem{
 				&& event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName() != null 
 				&& event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(this.getItemMeta().getDisplayName()))
 			if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-				if(cooldown.contains(player.getUniqueId().toString())) {
-					player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Cooldown> &7This item is on cooldown!"));
+				event.setCancelled(true);
+				if(hardcore.cm.onCooldown(player, "MinersIntuition"))
 					return;
-				}
-				cooldown.add(player.getUniqueId().toString());
+				
 				Location pLoc = player.getLocation();
 				
 				for(int x = -3; x < 4; x++)
@@ -77,10 +71,8 @@ public class MinersIntuition1 extends CustomItem{
 							Location loc = new Location(pLoc.getWorld(), pLoc.getBlockX() + x + 0.5, pLoc.getBlockY() + y + 0.5, pLoc.getBlockZ() + z + 0.5);
 							Hardcore.hardcore.bu.glowBlockNMS(player, loc);
 						}
-				Bukkit.getScheduler().scheduleSyncDelayedTask(hardcore, () ->{
-					cooldown.remove(player.getUniqueId().toString());
-					player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Cooldown> &7Miners Intuition is no longer on cooldown!!"));
-				}, 600);
+				
+				hardcore.cm.giveCooldown(player, "MinersIntuition", 15);
 				
 			}
 		

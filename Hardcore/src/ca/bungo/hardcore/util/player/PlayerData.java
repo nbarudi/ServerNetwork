@@ -2,6 +2,7 @@ package ca.bungo.hardcore.util.player;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 import ca.bungo.core.api.CoreAPI.PlayerInfo;
 import ca.bungo.hardcore.hardcore.Hardcore;
 import ca.bungo.hardcore.skills.Skill;
+import ca.bungo.hardcore.util.Cooldown;
 import ca.bungo.hardcore.util.managers.SkillManager;
 
 public class PlayerData {
@@ -28,6 +30,8 @@ public class PlayerData {
 	public PlayerInfo pInfo;
 	
 	public int xpBounty = 0;
+	
+	private HashMap<String, Cooldown> cooldowns = new HashMap<String, Cooldown>();
 	
 	Hardcore hardcore;
 	
@@ -113,6 +117,21 @@ public class PlayerData {
 		}else {
 			Bukkit.getPlayer(UUID.fromString(uuid)).sendMessage(ChatColor.translateAlternateColorCodes('&',"&7[&aHardcore&7] &eYou have died and lost 1 life! You have " + this.lives + " lives remaining!"));
 		}
+	}
+	
+	
+	public void addCooldown(String name, Cooldown cooldown) {
+		cooldowns.put(name, cooldown);
+	}
+	
+	public void removeCooldown(String name) {
+		cooldowns.remove(name);
+	}
+	
+	public Cooldown getCooldown(String name) {
+		Cooldown cd = null;
+		cd = cooldowns.get(name);
+		return cd;
 	}
 
 }

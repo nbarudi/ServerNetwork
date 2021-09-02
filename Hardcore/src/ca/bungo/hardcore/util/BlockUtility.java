@@ -37,7 +37,7 @@ public class BlockUtility {
 		
 		registerBlockColors();
 		setupReflection();
-	}
+	}	
 	
 	private void setupReflection() {
 		EntityMagmaCube = ReflectionUtility.getNMSClass("EntityMagmaCube");
@@ -132,7 +132,7 @@ public class BlockUtility {
 					e.printStackTrace();
 					return;
 				}
-			}, 100);
+			}, 150);
 			
 		}catch (Exception e) {
 			e.printStackTrace();
