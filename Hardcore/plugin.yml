@@ -20,3 +20,6 @@ commands:
     usage: /help
   test:
     usage: /test
+  tpa:
+    usage: /tpa
+    aliases: [tpaccept, tpdeny, tpr]

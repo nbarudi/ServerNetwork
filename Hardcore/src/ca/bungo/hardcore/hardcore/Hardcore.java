@@ -21,6 +21,7 @@ import ca.bungo.hardcore.cmds.ReviveCommand;
 import ca.bungo.hardcore.cmds.ShopCommand;
 import ca.bungo.hardcore.cmds.TeamCommand;
 import ca.bungo.hardcore.cmds.TestCommand;
+import ca.bungo.hardcore.cmds.TpaCommand;
 import ca.bungo.hardcore.events.InventoryPerkHandler;
 import ca.bungo.hardcore.events.InventoryShopHandler;
 import ca.bungo.hardcore.events.LevelingEvents;
@@ -178,6 +179,7 @@ public class Hardcore extends JavaPlugin {
 		core.coreCommands.add(new TeamCommand(core, "Teams"));
 		core.coreCommands.add(new HelpCommand(core, "Help"));
 		core.coreCommands.add(new TestCommand(core, "Test"));
+		core.coreCommands.add(new TpaCommand(core, "TPA"));
 		
 		core.reregisterCommands(this);
 	}
