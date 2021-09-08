@@ -61,7 +61,7 @@ public class TpaCommand extends CoreCommands {
 				sendResponse(sender, "Invalid Usage: &c");
 			else {
 				if(!Hardcore.hardcore.tm.playerHasTeam(player))
-					sendResponse(sender, "You must be in a team to use request a Teleport!");
+					sendResponse(sender, "You must be in a team to request a Teleport!");
 				else if(!Hardcore.hardcore.tm.playerHasTeam(target) || !(Hardcore.hardcore.tm.getTeam(player).teamName.equals(Hardcore.hardcore.tm.getTeam(target).teamName)))
 					sendResponse(sender, "You can only TP to someone in your team!");
 				else {
@@ -70,7 +70,7 @@ public class TpaCommand extends CoreCommands {
 					else {
 						requests.put(target.getUniqueId().toString(), player.getUniqueId().toString());
 						sendResponse(sender, "Send a teleport request to " + target.getName() +"!");
-						sendResponse(target, player.getName() + " has send you a TP Request! Respond with &e/tpaccept &7or &e/tpdeny &7The request will expire in 30 seconds!");
+						sendResponse(target, player.getName() + " has sent you a TP Request! Respond with &e/tpaccept &7or &e/tpdeny &7The request will expire in 30 seconds!");
 						Bukkit.getScheduler().scheduleSyncDelayedTask(core, ()->{
 							if(requests.containsKey(target.getUniqueId().toString())) {
 								requests.remove(target.getUniqueId().toString());
