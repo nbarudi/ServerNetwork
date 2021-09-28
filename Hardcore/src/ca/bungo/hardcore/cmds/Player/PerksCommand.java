@@ -1,4 +1,4 @@
-package ca.bungo.hardcore.cmds;
+package ca.bungo.hardcore.cmds.Player;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -6,15 +6,15 @@ import org.bukkit.entity.Player;
 
 import ca.bungo.core.cmds.CoreCommands;
 import ca.bungo.core.core.Core;
-import ca.bungo.hardcore.events.InventoryShopHandler;
+import ca.bungo.hardcore.events.InventoryPerkHandler;
 import ca.bungo.hardcore.hardcore.Hardcore;
 import ca.bungo.hardcore.util.player.PlayerData;
 
-public class ShopCommand extends CoreCommands {
+public class PerksCommand extends CoreCommands {
 
-	public ShopCommand(Core core, String name) {
+	public PerksCommand(Core core, String name) {
 		super(core, name);
-		this.description = "Access the shop";
+		this.description = "Access the perk shop";
 		this.usage = "/" + this.name;
 		this.reqPlayer = true;
 		this.levelRequirement = true;
@@ -31,9 +31,9 @@ public class ShopCommand extends CoreCommands {
 			return;
 		}
 		
-		player.openInventory(InventoryShopHandler.openInventory(data, null));
+		player.openInventory(InventoryPerkHandler.createInventoryMenu(data, 0));
 		
-		sendResponse(sender, "Opening Shop menu!");
+		sendResponse(sender, "Opening Perks menu!");
 	}
 
 }

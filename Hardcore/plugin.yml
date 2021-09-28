@@ -26,3 +26,5 @@ commands:
   home:
     usage: /home
     aliases: [sethome, delhome, homes]
+  stats:
+    usage: /stats

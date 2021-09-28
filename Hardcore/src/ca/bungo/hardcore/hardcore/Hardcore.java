@@ -13,16 +13,18 @@ import ca.bungo.core.api.CoreAPI;
 import ca.bungo.core.api.EconomyAPI;
 import ca.bungo.core.api.PermissionsAPI;
 import ca.bungo.core.core.Core;
-import ca.bungo.hardcore.cmds.BountyCommand;
-import ca.bungo.hardcore.cmds.HelpCommand;
-import ca.bungo.hardcore.cmds.HomeCommand;
-import ca.bungo.hardcore.cmds.ItemsCommand;
-import ca.bungo.hardcore.cmds.PerksCommand;
-import ca.bungo.hardcore.cmds.ReviveCommand;
-import ca.bungo.hardcore.cmds.ShopCommand;
-import ca.bungo.hardcore.cmds.TeamCommand;
-import ca.bungo.hardcore.cmds.TestCommand;
-import ca.bungo.hardcore.cmds.TpaCommand;
+import ca.bungo.hardcore.cmds.Administration.ItemsCommand;
+import ca.bungo.hardcore.cmds.Administration.ReviveCommand;
+import ca.bungo.hardcore.cmds.Administration.TestCommand;
+import ca.bungo.hardcore.cmds.Player.BountyCommand;
+import ca.bungo.hardcore.cmds.Player.HelpCommand;
+import ca.bungo.hardcore.cmds.Player.HomeCommand;
+import ca.bungo.hardcore.cmds.Player.PerksCommand;
+import ca.bungo.hardcore.cmds.Player.ShopCommand;
+import ca.bungo.hardcore.cmds.Player.StatsCommand;
+import ca.bungo.hardcore.cmds.Player.TeamCommand;
+import ca.bungo.hardcore.cmds.Player.TpaCommand;
+import ca.bungo.hardcore.events.CommandOverrider;
 import ca.bungo.hardcore.events.InventoryPerkHandler;
 import ca.bungo.hardcore.events.InventoryShopHandler;
 import ca.bungo.hardcore.events.LevelingEvents;
@@ -120,6 +122,7 @@ public class Hardcore extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		tm.saveAllData();
+		pm.saveAllPlayerData();
 	}
 	
 	private void registerItems() {
@@ -185,6 +188,7 @@ public class Hardcore extends JavaPlugin {
 		core.coreCommands.add(new TestCommand(core, "Test"));
 		core.coreCommands.add(new TpaCommand(core, "TPA"));
 		core.coreCommands.add(new HomeCommand(core, "Home"));
+		core.coreCommands.add(new StatsCommand(core, "Stats"));
 		
 		core.reregisterCommands(this);
 	}
@@ -195,6 +199,7 @@ public class Hardcore extends JavaPlugin {
 		pm.registerEvents(new LevelingEvents(this), this);
 		pm.registerEvents(new InventoryPerkHandler(this), this);
 		pm.registerEvents(new InventoryShopHandler(this), this);
+		pm.registerEvents(new CommandOverrider(), this);
 		
 		for(Skill s : skills) {
 			pm.registerEvents(s, this);

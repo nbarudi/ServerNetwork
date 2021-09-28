@@ -1,4 +1,4 @@
-package ca.bungo.hardcore.cmds;
+package ca.bungo.hardcore.cmds.Administration;
 
 import org.bukkit.Location;
 import org.bukkit.command.Command;

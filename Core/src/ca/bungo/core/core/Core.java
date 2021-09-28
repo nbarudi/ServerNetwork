@@ -176,8 +176,7 @@ public class Core extends JavaPlugin {
 	}
 	
 	private void loadConfigs() {
-		boolean coreChat = getConfig().getBoolean("core-chat");
-		useCoreChat = coreChat;
+		useCoreChat = getConfig().getBoolean("core-chat");;
 	}
 
 	

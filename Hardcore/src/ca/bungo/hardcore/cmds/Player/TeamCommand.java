@@ -1,4 +1,4 @@
-package ca.bungo.hardcore.cmds;
+package ca.bungo.hardcore.cmds.Player;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

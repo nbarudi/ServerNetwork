@@ -64,6 +64,12 @@ public class PlayerManager {
 		hardcore.saveConfig();
 	}
 	
+	public void saveAllPlayerData() {
+		for(PlayerData data : playerData) {
+			savePlayerData(data);
+		}
+	}
+	
 	public void removePlayerData(PlayerData data) {
 		savePlayerData(data);
 		playerData.remove(data);

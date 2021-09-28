@@ -1,4 +1,4 @@
-package ca.bungo.hardcore.cmds;
+package ca.bungo.hardcore.cmds.Player;
 
 import java.util.Map;
 
