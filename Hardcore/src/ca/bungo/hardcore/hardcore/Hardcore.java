@@ -15,6 +15,7 @@ import ca.bungo.core.api.PermissionsAPI;
 import ca.bungo.core.core.Core;
 import ca.bungo.hardcore.cmds.BountyCommand;
 import ca.bungo.hardcore.cmds.HelpCommand;
+import ca.bungo.hardcore.cmds.HomeCommand;
 import ca.bungo.hardcore.cmds.ItemsCommand;
 import ca.bungo.hardcore.cmds.PerksCommand;
 import ca.bungo.hardcore.cmds.ReviveCommand;
@@ -51,6 +52,7 @@ import ca.bungo.hardcore.skills.Keep.KeepLevels;
 import ca.bungo.hardcore.util.BlockUtility;
 import ca.bungo.hardcore.util.HelpUtility;
 import ca.bungo.hardcore.util.MobUtility;
+import ca.bungo.hardcore.util.PlayerUtility;
 import ca.bungo.hardcore.util.managers.CooldownManager;
 import ca.bungo.hardcore.util.managers.ItemManager;
 import ca.bungo.hardcore.util.managers.PlayerManager;
@@ -74,6 +76,7 @@ public class Hardcore extends JavaPlugin {
 	public BlockUtility bu;
 	public CooldownManager cm;
 	public MobUtility mu;
+	public PlayerUtility pu;
 	
 	public ArrayList<Skill> skills = new ArrayList<Skill>();
 	
@@ -101,6 +104,7 @@ public class Hardcore extends JavaPlugin {
 		bu = new BlockUtility(this);
 		cm = new CooldownManager(this);
 		mu = new MobUtility(this);
+		pu = new PlayerUtility(this);
 		
 		registerConfigs();
 		registerItems();
@@ -180,6 +184,7 @@ public class Hardcore extends JavaPlugin {
 		core.coreCommands.add(new HelpCommand(core, "Help"));
 		core.coreCommands.add(new TestCommand(core, "Test"));
 		core.coreCommands.add(new TpaCommand(core, "TPA"));
+		core.coreCommands.add(new HomeCommand(core, "Home"));
 		
 		core.reregisterCommands(this);
 	}

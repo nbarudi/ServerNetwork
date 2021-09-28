@@ -20,7 +20,7 @@ public class TpaCommand extends CoreCommands {
 		super(core, name);
 		this.description = "Request to teleport to a player on your team.";
 		this.levelRequirement = true;
-		this.requiredLevel = 10;
+		this.requiredLevel = 3;
 		this.usage = "/" + this.name + " <player>";
 		this.reqPlayer = true;
 	}

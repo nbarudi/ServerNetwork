@@ -23,3 +23,6 @@ commands:
   tpa:
     usage: /tpa
     aliases: [tpaccept, tpdeny, tpr]
+  home:
+    usage: /home
+    aliases: [sethome, delhome, homes]
