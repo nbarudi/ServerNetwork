@@ -1,0 +1,7 @@
+name: Experimenting
+version: 1.0
+main: ca.bungo.experimenting.experimenting.Experimenting
+api-version: 1.13
+commands:
+  experiment:
+    usage: /experiment
