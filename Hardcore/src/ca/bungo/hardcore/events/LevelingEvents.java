@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import ca.bungo.core.api.CoreAPI.PlayerInfo;
+import ca.bungo.core.api.cAPI.CoreAPIAbstract.PlayerInfo;
 import ca.bungo.hardcore.hardcore.Hardcore;
 
 public class LevelingEvents implements Listener {

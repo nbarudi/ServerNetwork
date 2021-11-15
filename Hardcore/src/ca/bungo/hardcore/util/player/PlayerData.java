@@ -10,7 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import ca.bungo.core.api.CoreAPI.PlayerInfo;
+import ca.bungo.core.api.cAPI.CoreAPIAbstract.PlayerInfo;
 import ca.bungo.hardcore.hardcore.Hardcore;
 import ca.bungo.hardcore.skills.Skill;
 import ca.bungo.hardcore.util.Cooldown;

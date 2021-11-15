@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import ca.bungo.core.api.CoreAPI;
 import ca.bungo.core.api.PermissionsAPI;
-import ca.bungo.core.api.CoreAPI.PlayerInfo;
+import ca.bungo.core.api.cAPI.CoreAPIAbstract.PlayerInfo;
 import ca.bungo.core.core.Core;
 import ca.bungo.core.events.CustomEvents.PlayerLevelUpEvent;
 import net.md_5.bungee.api.ChatColor;

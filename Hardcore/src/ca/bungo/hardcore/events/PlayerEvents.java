@@ -13,7 +13,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import ca.bungo.core.api.CoreAPI.PlayerInfo;
+import ca.bungo.core.api.cAPI.CoreAPIAbstract.PlayerInfo;
 import ca.bungo.core.events.CustomEvents.PlayerLevelUpEvent;
 import ca.bungo.hardcore.hardcore.Hardcore;
 import ca.bungo.hardcore.util.player.PlayerData;
@@ -81,6 +81,7 @@ public class PlayerEvents implements Listener {
 		player.discoverRecipe(NamespacedKey.fromString("fortune4", hardcore));
 		player.discoverRecipe(NamespacedKey.fromString("fortune5", hardcore));
 		player.discoverRecipe(NamespacedKey.fromString("fortune6", hardcore));
+		
 	}
 	
 	@EventHandler

@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import ca.bungo.core.api.CoreAPI;
-import ca.bungo.core.api.CoreAPI.PlayerInfo;
+import ca.bungo.core.api.cAPI.CoreAPIAbstract.PlayerInfo;
 import ca.bungo.core.cmds.CoreCommands;
 import ca.bungo.core.core.Core;
 import ca.bungo.core.util.ChatUtilities;

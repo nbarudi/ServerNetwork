@@ -14,7 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import ca.bungo.core.api.CoreAPI.PlayerInfo;
+import ca.bungo.core.api.cAPI.CoreAPIAbstract.PlayerInfo;
 import ca.bungo.hardcore.cmds.Administration.ItemsCommand;
 import ca.bungo.hardcore.hardcore.Hardcore;
 import ca.bungo.hardcore.items.CustomItem;

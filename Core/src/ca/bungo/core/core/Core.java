@@ -13,7 +13,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import ca.bungo.core.api.CoreAPI;
-import ca.bungo.core.api.CoreAPI.PlayerInfo;
+import ca.bungo.core.api.cAPI.CoreAPIAbstract.PlayerInfo;
 import ca.bungo.core.cmds.CoreCommands;
 import ca.bungo.core.cmds.Administration.ExperienceCommand;
 import ca.bungo.core.cmds.Administration.GBanCommand;
@@ -31,9 +31,12 @@ import ca.bungo.core.cmds.Player.NameCommand;
 import ca.bungo.core.cmds.Player.WhisperCommand;
 import ca.bungo.core.events.ChatEvent;
 import ca.bungo.core.events.PlayerEventManagement;
+import ca.bungo.core.util.FileManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class Core extends JavaPlugin {
+	
+	public boolean usingMySQL = true;
 	
 	private class Database {
 		
@@ -89,18 +92,25 @@ public class Core extends JavaPlugin {
 	
 	public MysqlDataSource source;
 	
+	public FileManager fm;
+	
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
 		logConsole("&aCore Systems are loading!");
-		logConsole("&3Connecting to MySql Database...");
-		source = initMySql();
 		
-		if(source == null) {
-			logConsole("&4Failed to obtain MySql Database!");
-			return;
-		}else {
-			logConsole("&aConnected to MySql Server!");
+		this.usingMySQL = getConfig().getBoolean("useMySQL");
+		
+		if(usingMySQL) {
+			logConsole("&3Connecting to MySql Database...");
+			source = initMySql();
+			
+			if(source == null) {
+				logConsole("&4Failed to obtain MySql Database!");
+				return;
+			}else {
+				logConsole("&aConnected to MySql Server!");
+			}
 		}
 		
 		logConsole("&3Registering Events...");
@@ -110,6 +120,7 @@ public class Core extends JavaPlugin {
 		registerCommands();
 		logConsole("&aCommands Registered...");
 		logConsole("&3Loading Configs...");
+		fm = new FileManager(this);
 		loadConfigs();
 		logConsole("&aConfigs Loaded...");
 		
@@ -176,7 +187,8 @@ public class Core extends JavaPlugin {
 	}
 	
 	private void loadConfigs() {
-		useCoreChat = getConfig().getBoolean("core-chat");;
+		useCoreChat = getConfig().getBoolean("core-chat");
+		fm.saveConfig("playerdata.yml");
 	}
 
 	

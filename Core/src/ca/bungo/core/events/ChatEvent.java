@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import ca.bungo.core.api.CoreAPI;
-import ca.bungo.core.api.CoreAPI.PlayerInfo;
+import ca.bungo.core.api.cAPI.CoreAPIAbstract.PlayerInfo;
 import ca.bungo.core.core.Core;
 import ca.bungo.core.util.ChatUtilities;
 import ca.bungo.core.util.RankUtilities;
