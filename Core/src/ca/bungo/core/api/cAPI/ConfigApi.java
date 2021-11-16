@@ -1,5 +1,6 @@
 package ca.bungo.core.api.cAPI;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -30,7 +31,6 @@ public class ConfigApi extends CoreAPIAbstract {
 
 		public ConfigPlayerInfo(Player player) {
 			super(player);
-			cfg = core.fm.getConfig("playerdata.yml").get();
 		}
 
 		@Override
@@ -75,6 +75,7 @@ public class ConfigApi extends CoreAPIAbstract {
 
 	public ConfigApi(Core core) {
 		super(core);
+		cfg = core.fm.getConfig("playerdata.yml").get();
 	}
 
 	@Override
@@ -143,7 +144,27 @@ public class ConfigApi extends CoreAPIAbstract {
 
 	@Override
 	public void savePlayer(Player player) {
-		// TODO Auto-generated method stub
+		if(!playerExists(player))
+			return;
+		
+		ConfigurationSection sec = cfg.getConfigurationSection("Players." + player.getUniqueId().toString());
+		
+		PlayerInfo info = getPlayerInfo(player);
+		
+		/*stmt.setString(1, player.getName());
+		stmt.setInt(2, info.exp);
+		stmt.setInt(3, info.level);
+		stmt.setString(4, info.rank);
+		stmt.setString(5, info.nickname);
+		stmt.setString(6, info.disguise);
+		stmt.setInt(7, info.pid);*/
+		sec.set("username", info.username);
+		sec.set("exp", info.exp);
+		sec.set("level", info.level);
+		sec.set("rank", info.rank);
+		sec.set("nickname", info.nickname);
+		sec.set("disguise", info.disguise);
+		core.fm.saveConfig("playerdata.yml");
 	}
 
 	@Override
@@ -159,26 +180,87 @@ public class ConfigApi extends CoreAPIAbstract {
 
 	@Override
 	public void removePlayerInfo(Player player) {
-		// TODO Auto-generated method stub
-
+		PlayerInfo info = getPlayerInfo(player);
+		for(int task : info.tasks) {
+			Bukkit.getScheduler().cancelTask(task);
+		}
+		savePlayer(player);
+		core.pInfo.remove(info);
 	}
 
 	@Override
 	public boolean checkMute(Player player) {
-		// TODO Auto-generated method stub
+		
+		if(!playerExists(player))
+			return false;
+		
+		ConfigurationSection sec = cfg.getConfigurationSection("Players." + player.getUniqueId().toString());
+		
+		if(sec.getConfigurationSection("mutes") == null)
+			return false;
+		
+		for(String key : sec.getConfigurationSection("mutes").getKeys(false)) {
+			if(sec.getBoolean("mutes." + key + ".unmuted"))
+				continue;
+			long endTime = sec.getLong("mutes." + key + ".endtime");
+			Date date = new Date();
+			if(endTime <= date.getTime() || endTime == 0) {
+				sec.set("mutes." + key + ".unmuted", true);
+				core.fm.saveConfig("playerdata.yml");
+				continue;
+			}
+			else
+				return true;
+		}
+		
 		return false;
+	}
+	
+	private int highestMuteValue(String uuid) {
+		int max = 0;
+		for(String key : cfg.getConfigurationSection("Players." + uuid + ".mutes").getKeys(false)) {
+				if(Integer.parseInt(key) > max)
+					max = Integer.parseInt(key);
+		}
+		return max;
 	}
 
 	@Override
 	public boolean mutePlayer(Player player, long endTime, String muter) {
-		// TODO Auto-generated method stub
-		return false;
+		if(!playerExists(player))
+			return false;
+		
+		ConfigurationSection sec = cfg.getConfigurationSection("Players." + player.getUniqueId().toString());
+		
+		if(sec.getConfigurationSection("mutes") == null)
+			sec.createSection("mutes");
+		
+		int lastMuteID = highestMuteValue(player.getUniqueId().toString());
+		
+		sec.set("mutes." + (lastMuteID+1) + ".endtime", endTime);
+		sec.set("mutes." + (lastMuteID+1) + ".unmuted", false);
+		sec.set("mutes." + (lastMuteID+1) + ".whomuted", muter);
+		
+		core.fm.saveConfig("playerdata.yml");
+		
+		return true;
 	}
 
 	@Override
-	public boolean unmutePlayer(Player target) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean unmutePlayer(Player player) {
+		if(!playerExists(player))
+			return false;
+		
+		ConfigurationSection sec = cfg.getConfigurationSection("Players." + player.getUniqueId().toString());
+		
+		if(sec.getConfigurationSection("mutes") == null)
+			return true;
+		
+		for(String key : sec.getConfigurationSection("mutes").getKeys(false)) 
+			sec.set("mutes." + key + ".unmuted", true);
+		
+		
+		return true;
 	}
 
 	@Override
