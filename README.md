@@ -1,6 +1,5 @@
 # Server Network
-
-(Disclamer: Since classes started Development will be delayed until my schedule opens up)
+(Disclaimer: Since classes started Development will be delayed until my schedule opens up)
 
 ## Types of Servers:
     1. RDvZ >>
