@@ -67,7 +67,7 @@ their items are stored in a 'corpse' object that lays on the ground. Players can
 Key features: Corpses persist between server restarts / reloads allowing for players to not worry about losing items if the server was to crash or reboot.
 
 This plugin is public use but currently (At the time of writing this) only functions on the most recent version of Spigot 1.16.5.
-The reasoning behind this limitation is that this feature requires a lot of NMS Packet logic which is version spesific.
+The reasoning behind this limitation is that this feature requires a lot of NMS Packet logic which is version specific.
 Future plans and updates for this plugin can be found on its Github Repo [Here](https://github.com/nbarudi/LootableCorpses)
 
 ## Plans will change as time goes on depending on new ideas, server plans, and balance changes.
