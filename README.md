@@ -57,6 +57,19 @@
     - Players can buy more lives with their SP 
        (Cost to be set based on balance as time goes on)
 
+### What is Lootable Corpses?
+If you cannot follow along with what the name explains here is the general idea:
+
+Lootable Corpses is a small side project I was working on to allow for a different death system to exist on the server.
+The idea for this death system is instead of a player being killed and dropping all their items on the ground,
+their items are stored in a 'corpse' object that lays on the ground. Players can return to their death point and recollect their items once they respawn and allows for their items to not be despawned if they take too long.
+
+Key features: Corpses persist between server restarts / reloads allowing for players to not worry about losing items if the server was to crash or reboot.
+
+This plugin is public use but currently (At the time of writing this) only functions on the most recent version of Spigot 1.16.5.
+The reasoning behind this limitation is that this feature requires a lot of NMS Packet logic which is version specific.
+Future plans and updates for this plugin can be found on its Github Repo [Here](https://github.com/nbarudi/LootableCorpses)
+
 ## Plans will change as time goes on depending on new ideas, server plans, and balance changes.
 *
 *
