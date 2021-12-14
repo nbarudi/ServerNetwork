@@ -1,17 +1,27 @@
 package ca.bungo.hardcore.events;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import ca.bungo.core.api.cAPI.CoreAPIAbstract.PlayerInfo;
 import ca.bungo.core.events.CustomEvents.PlayerLevelUpEvent;
@@ -21,6 +31,8 @@ import ca.bungo.hardcore.util.player.PlayerData;
 public class PlayerEvents implements Listener {
 	
 	Hardcore hardcore;
+	
+	private Map<String, Location> deathLocation = new HashMap<String, Location>();
 	
 	//private String prefix = "&9Levels>";
 	
@@ -72,15 +84,9 @@ public class PlayerEvents implements Listener {
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eYou have been revived into this world!"));
 		}
 		
-		player.discoverRecipe(NamespacedKey.fromString("lifeegg", hardcore));
-		player.discoverRecipe(NamespacedKey.fromString("extraclaims", hardcore));
-		player.discoverRecipe(NamespacedKey.fromString("extralife", hardcore));
-		player.discoverRecipe(NamespacedKey.fromString("minersintuition1", hardcore));
-		player.discoverRecipe(NamespacedKey.fromString("minersintuition2", hardcore));
-		player.discoverRecipe(NamespacedKey.fromString("minersintuition3", hardcore));
-		player.discoverRecipe(NamespacedKey.fromString("fortune4", hardcore));
-		player.discoverRecipe(NamespacedKey.fromString("fortune5", hardcore));
-		player.discoverRecipe(NamespacedKey.fromString("fortune6", hardcore));
+		for(String nKey : hardcore.nameKeys) {
+			player.discoverRecipe(NamespacedKey.fromString(nKey, hardcore));
+		}
 		
 	}
 	
@@ -94,6 +100,9 @@ public class PlayerEvents implements Listener {
 		Player player = event.getEntity();
 		PlayerData data = hardcore.pm.getPlayerData(player);
 		data.handleDeath();
+		
+		//Death Location
+		deathLocation.put(player.getUniqueId().toString(), player.getLocation());
 		
 		//Bounty System
 		Player killer = player.getKiller();
@@ -114,6 +123,40 @@ public class PlayerEvents implements Listener {
 		
 		hardcore.pm.savePlayerData(kData);
 		hardcore.pm.savePlayerData(data);
+	}
+	
+	@EventHandler
+	public void onRespawn(PlayerRespawnEvent event) {
+		
+		if(!deathLocation.containsKey(event.getPlayer().getUniqueId().toString()))
+			return;
+		
+		Location loc = deathLocation.get(event.getPlayer().getUniqueId().toString());
+		
+		ItemStack item = new ItemStack(Material.PAPER);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(ChatColor.DARK_GRAY + "Death Note");
+		List<String> lore = new ArrayList<String>();
+		lore.add(ChatColor.YELLOW + "You have died!");
+		lore.add(ChatColor.YELLOW + "Death Location:");
+		lore.add(ChatColor.translateAlternateColorCodes('&', "&eX: &b" + loc.getBlockX() + " &e| Y: &b" + loc.getBlockY() + " &e| Z: &b" + loc.getBlockZ()));
+		lore.add(ChatColor.YELLOW + "Drop me to delete!");
+		meta.setLore(lore);
+		item.setItemMeta(meta);
+		deathLocation.remove(event.getPlayer().getUniqueId().toString());
+		event.getPlayer().getInventory().addItem(item);
+		event.getPlayer().sendMessage(ChatColor.YELLOW + "Your death note has been given to you!");
+	}
+	
+	@EventHandler
+	public void onDrop(PlayerDropItemEvent event) {
+		ItemStack item = event.getItemDrop().getItemStack();
+		ItemMeta meta = item.getItemMeta();
+		if(meta != null && meta.getDisplayName() != null) {
+			if(meta.getDisplayName().contains("Death Note")) {
+				event.getItemDrop().remove();
+			}
+		}
 	}
 	
 

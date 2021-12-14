@@ -36,6 +36,7 @@ public class MinersIntuition2 extends CustomItem{
 		this.setItemMeta(meta);
 		
 		
+		hardcore.nameKeys.add("minersintuition2");
 		ShapedRecipe sr = new ShapedRecipe(new NamespacedKey(hardcore, "minersintuition2"), this);
 		sr.shape("BDB", 
 				 "HCH", 

@@ -5,6 +5,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
@@ -58,15 +59,15 @@ public class LevelingEvents implements Listener {
 		Player player = event.getPlayer();
 		PlayerInfo info = hardcore.cAPI.getPlayerInfo(player);
 		
-		info.increaseEXP(1); //Want to add/remove XP by 1 for breaking and placing a block.. Just so there is an 'idle' way of gaining XP besides killing mobs
+		info.increaseEXP(1); //Want to add XP by 1 for breaking and placing a block.. Just so there is an 'idle' way of gaining XP besides killing mobs
 	}
 	
 	@EventHandler
-	public void onBlockBreak(BlockPlaceEvent event) {
+	public void onBlockBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo info = hardcore.cAPI.getPlayerInfo(player);
 		
-		info.increaseEXP(1); //Want to add/remove XP by 1 for breaking and placing a block.. Just so there is an 'idle' way of gaining XP besides killing mobs
+		info.increaseEXP(1); //Want to add XP by 1 for breaking and placing a block.. Just so there is an 'idle' way of gaining XP besides killing mobs
 	}
 
 }

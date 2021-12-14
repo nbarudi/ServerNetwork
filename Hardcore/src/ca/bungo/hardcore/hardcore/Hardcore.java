@@ -81,6 +81,7 @@ public class Hardcore extends JavaPlugin {
 	public PlayerUtility pu;
 	
 	public ArrayList<Skill> skills = new ArrayList<Skill>();
+	public ArrayList<String> nameKeys = new ArrayList<>();
 	
 	public static Hardcore hardcore;
 	

@@ -43,6 +43,15 @@ public class ConfigApi extends CoreAPIAbstract {
 			this.exp = sec.getInt("exp");
 			this.rank = sec.getString("rank");
 			this.pid = sec.getInt("pid");
+			
+			if(this.nickname == null)
+				this.nickname = "";
+			if(this.disguise == null)
+				this.disguise = "";
+			if(this.level == 0)
+				this.level = 1;
+			if(this.rank == null)
+				this.rank = "user";
 					
 			autoUpdater();
 		}

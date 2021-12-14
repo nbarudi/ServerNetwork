@@ -35,6 +35,7 @@ public class Fortune5Item extends CustomItem{
 		meta.setLore(lore);
 		this.setItemMeta(meta);
 		
+		hardcore.nameKeys.add("fortune5");
 		ShapedRecipe sr = new ShapedRecipe(new NamespacedKey(hardcore, "fortune5"), this);
 		sr.shape("BLB",
 				 "LbL",

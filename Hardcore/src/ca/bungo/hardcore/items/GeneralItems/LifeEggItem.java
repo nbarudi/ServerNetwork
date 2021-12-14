@@ -29,7 +29,7 @@ public class LifeEggItem extends CustomItem {
 		this.setItemMeta(im);
 		this.setAmount(1);
 		
-		
+		hardcore.nameKeys.add("lifeegg");
 		ShapedRecipe sr = new ShapedRecipe(new NamespacedKey(hardcore, "lifeegg"), this);
 		sr.shape("PWC", 
 				 "WEW", 

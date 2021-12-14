@@ -19,7 +19,7 @@ import ca.bungo.hardcore.util.managers.SkillManager;
 public class PlayerData {
 	
 	public int skillPoints;
-	public int maxSkillPoints;
+	private int maxSkillPoints;
 	public int lives;
 	public long reviveTime;
 	public String uuid;
@@ -132,6 +132,10 @@ public class PlayerData {
 		Cooldown cd = null;
 		cd = cooldowns.get(name);
 		return cd;
+	}
+	
+	public int getMaxSkillPoints() {
+		return pInfo.level-1;
 	}
 
 }

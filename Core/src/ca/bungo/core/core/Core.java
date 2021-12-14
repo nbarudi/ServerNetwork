@@ -86,6 +86,7 @@ public class Core extends JavaPlugin {
 
 	public ArrayList<PlayerInfo> pInfo = new ArrayList<>();
 	
+	
 	public ArrayList<CoreCommands> coreCommands = new ArrayList<>();
 	public ArrayList<CoreCommands> helpList = new ArrayList<>();
 	public boolean useCoreChat = true;
@@ -124,7 +125,6 @@ public class Core extends JavaPlugin {
 		registerCommands();
 		logConsole("&aCommands Registered...");
 		logConsole("&3Loading Configs...");
-		fm = new FileManager(this);
 		loadConfigs();
 		logConsole("&aConfigs Loaded...");
 		

@@ -29,7 +29,6 @@ public class EconomyAPI {
 			return;
 		}
 		cAPI = new CoreAPI(core);
-		System.out.println("Economy Loaded!");
 	}
 	
 	private boolean setupEconomy() {
@@ -38,18 +37,15 @@ public class EconomyAPI {
         }
         RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
-        	System.out.println("Failed to find economy plugin!");
             return false;
         }
         econ = rsp.getProvider();
-        System.out.println(econ.getName());
         return (econ != null);
     }
 	
 	public boolean depositPlayer(String username, double amount) {
 		if(!this.enabled)
 			return false;
-		System.out.println("GMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
 		OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(cAPI.getPlayerInfo(Bukkit.getPlayer(username)).uuid));
 		
 		EconomyResponse resp = econ.depositPlayer(player, amount);

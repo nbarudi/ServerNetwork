@@ -43,7 +43,9 @@ public class ExtraClaimsItem extends CustomItem {
 		this.setItemMeta(meta);
 		
 		ItemStack tm = this.clone();
+		
 		tm.setAmount(3);
+		hardcore.nameKeys.add("extraclaims");
 		ShapedRecipe sr = new ShapedRecipe(new NamespacedKey(hardcore, "extraclaims"), tm);
 		sr.shape("DGD",
 				 "GBG",

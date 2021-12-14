@@ -41,6 +41,7 @@ public class ExtraLifeItem extends CustomItem {
 		this.requiresLevel = true;
 		this.reqLevel = 5;
 		
+		hardcore.nameKeys.add("extralife");
 		ShapedRecipe sr = new ShapedRecipe(new NamespacedKey(hardcore, "extralife"), this);
 		
 		sr.shape("BGB", 

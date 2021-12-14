@@ -57,7 +57,7 @@ public class PlayerManager {
 		String uuid = data.uuid;
 		ConfigurationSection cfgSec = hardcore.getConfig().getConfigurationSection("Players." + uuid);
 		cfgSec.set("lives", data.lives);
-		cfgSec.set("spentPoints" , data.maxSkillPoints - data.skillPoints);
+		cfgSec.set("spentPoints" , data.getMaxSkillPoints() - data.skillPoints);
 		cfgSec.set("reviveTime", data.reviveTime);
 		cfgSec.set("perks", data.ownedPerks);
 		cfgSec.set("xpbounty", data.xpBounty);
