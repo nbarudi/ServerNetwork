@@ -12,16 +12,16 @@ public abstract class CoreAPIAbstract {
 	public abstract class PlayerInfo{
 		public boolean exists = false;
 		
-		public String uuid;
+		public String uuid = "";
 		public int pid = 0;
-		public String username;
+		public String username = "";
 		public int exp = 0;
 		public int level = 1;
 		public String rank = "user";
 		
-		public String nickname;
+		public String nickname = "";
 		
-		public String disguise;
+		public String disguise = "";
 		public int fakeLevel = 0;
 		
 		public ArrayList<Integer> tasks = new ArrayList<Integer>();

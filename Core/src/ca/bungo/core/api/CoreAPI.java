@@ -2,6 +2,7 @@ package ca.bungo.core.api;
 
 import org.bukkit.entity.Player;
 
+import ca.bungo.core.api.cAPI.ConfigApi;
 import ca.bungo.core.api.cAPI.CoreAPIAbstract;
 import ca.bungo.core.api.cAPI.MySQLApi;
 import ca.bungo.core.core.Core;
@@ -12,8 +13,15 @@ public class CoreAPI extends CoreAPIAbstract {
 	
 	public CoreAPI(Core core) {
 		super(core);
-		if(core.usingMySQL || core.source != null)
+		if(core.usingMySQL && core.source != null) {
 			cAPI = new MySQLApi(core);
+			core.logConsole("&eLoading MySQL based API!");
+		}
+		else {
+			cAPI = new ConfigApi(core);
+			core.logConsole("&eLoading Config Based API!");
+		}
+			
 		
 	}
 

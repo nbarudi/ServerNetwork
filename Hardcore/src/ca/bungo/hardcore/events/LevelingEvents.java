@@ -5,6 +5,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import ca.bungo.core.api.cAPI.CoreAPIAbstract.PlayerInfo;
@@ -46,8 +47,26 @@ public class LevelingEvents implements Listener {
 		
 		
 		//Economy Handler
-		hardcore.eAPI.depositPlayer(info.username, xpGain);
-		player.sendMessage(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', "&9Economy> &7You have gained &e" + xpGain + " &7credits from killing a " + event.getEntity().getName()));
+		if(hardcore.eAPI.depositPlayer(info.username, xpGain)) {
+			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Economy> &7You have gained &e" + xpGain + " &7credits from killing a " + event.getEntity().getName()));	
+		}
+		
+	}
+	
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent event) {
+		Player player = event.getPlayer();
+		PlayerInfo info = hardcore.cAPI.getPlayerInfo(player);
+		
+		info.increaseEXP(1); //Want to add/remove XP by 1 for breaking and placing a block.. Just so there is an 'idle' way of gaining XP besides killing mobs
+	}
+	
+	@EventHandler
+	public void onBlockBreak(BlockPlaceEvent event) {
+		Player player = event.getPlayer();
+		PlayerInfo info = hardcore.cAPI.getPlayerInfo(player);
+		
+		info.increaseEXP(1); //Want to add/remove XP by 1 for breaking and placing a block.. Just so there is an 'idle' way of gaining XP besides killing mobs
 	}
 
 }

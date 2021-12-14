@@ -13,7 +13,7 @@ import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
 public class EconomyAPI {
 	
-	public boolean enabled = false;
+	public boolean enabled = true;
 	
 	private CoreAPI cAPI;
 	
@@ -28,7 +28,8 @@ public class EconomyAPI {
 			enabled = false;
 			return;
 		}
-		this.cAPI = new CoreAPI(core);
+		cAPI = new CoreAPI(core);
+		System.out.println("Economy Loaded!");
 	}
 	
 	private boolean setupEconomy() {
@@ -37,22 +38,30 @@ public class EconomyAPI {
         }
         RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
+        	System.out.println("Failed to find economy plugin!");
             return false;
         }
         econ = rsp.getProvider();
-        return econ != null;
+        System.out.println(econ.getName());
+        return (econ != null);
     }
 	
 	public boolean depositPlayer(String username, double amount) {
+		if(!this.enabled)
+			return false;
+		System.out.println("GMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
 		OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(cAPI.getPlayerInfo(Bukkit.getPlayer(username)).uuid));
 		
 		EconomyResponse resp = econ.depositPlayer(player, amount);
+		System.out.println(resp.errorMessage);
 		if(!(resp.type.equals(ResponseType.SUCCESS)))
 			return false;
 		return true;
 	}
 	
 	public boolean withdrawPlayer(String username, double amount) {
+		if(!this.enabled)
+			return false;
 		OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(cAPI.getPlayerInfo(Bukkit.getPlayer(username)).uuid));
 		
 		EconomyResponse resp = econ.withdrawPlayer(player, amount);
@@ -62,11 +71,15 @@ public class EconomyAPI {
 	}
 	
 	public boolean hasCredits(String username, double amount) {
+		if(!this.enabled)
+			return false;
 		OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(cAPI.getPlayerInfo(Bukkit.getPlayer(username)).uuid));
 		return econ.has(player, amount);
 	}
 	
 	public double getBalance(String username) {
+		if(!this.enabled)
+			return 0;
 		OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(cAPI.getPlayerInfo(Bukkit.getPlayer(username)).uuid));
 		return econ.getBalance(player);
 	}

@@ -62,7 +62,7 @@ public class HelpCommand extends CoreCommands {
 				}
 				
 				if(pageNum > cmds.size()/3) {
-					sendResponse(sender, "Error: Page does not exist!");
+					sendResponse(sender, "Error: There are no more commands for you to view!");
 					return;
 				}
 				

@@ -96,6 +96,9 @@ public class Core extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
+		
+		this.fm = new FileManager(this);
+		
 		saveDefaultConfig();
 		logConsole("&aCore Systems are loading!");
 		
@@ -107,7 +110,8 @@ public class Core extends JavaPlugin {
 			
 			if(source == null) {
 				logConsole("&4Failed to obtain MySql Database!");
-				return;
+				usingMySQL = false;
+				//return;
 			}else {
 				logConsole("&aConnected to MySql Server!");
 			}
@@ -204,7 +208,7 @@ public class Core extends JavaPlugin {
 	
 	private void testDataSource(MysqlDataSource dataSource) throws SQLException {
 		try (Connection conn = dataSource.getConnection()) {
-	        if (!conn.isValid(4000)) {
+	        if (!conn.isValid(200)) {
 	            throw new SQLException("Could not establish database connection.");
 	        }
 	    }
@@ -228,7 +232,7 @@ public class Core extends JavaPlugin {
 			testDataSource(dataSource);
 		} catch(SQLException e) {
 			logConsole("&4Something Went Wrong...");
-			e.printStackTrace();
+			//e.printStackTrace();
 			return null;
 		}
 		

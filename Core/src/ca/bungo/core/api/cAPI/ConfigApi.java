@@ -1,5 +1,6 @@
 package ca.bungo.core.api.cAPI;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import ca.bungo.core.core.Core;
+import ca.bungo.core.events.CustomEvents.PlayerLevelUpEvent;
 import ca.bungo.core.util.RankUtilities;
 import net.md_5.bungee.api.ChatColor;
 
@@ -31,24 +33,62 @@ public class ConfigApi extends CoreAPIAbstract {
 
 		public ConfigPlayerInfo(Player player) {
 			super(player);
+			this.exists = true;
+			
+			ConfigurationSection sec = cfg.getConfigurationSection("Players." + uuid);
+			
+			this.nickname = sec.getString("nickname");
+			this.disguise = sec.getString("disguise");
+			this.level = sec.getInt("level");
+			this.exp = sec.getInt("exp");
+			this.rank = sec.getString("rank");
+			this.pid = sec.getInt("pid");
+					
+			autoUpdater();
 		}
 
 		@Override
 		public void increaseEXP(int xp) {
-			// TODO Auto-generated method stub
+			int reqXP = (level * 250) + 1000;
 			
+			this.exp += xp;
+			
+			if(exp >= reqXP) {
+				PlayerLevelUpEvent event = new PlayerLevelUpEvent(Bukkit.getPlayer(UUID.fromString(uuid)), this.level, this.level+1);
+				Bukkit.getServer().getPluginManager().callEvent(event);
+				if(event.isCancelled())
+					return;
+				this.level++;
+				this.exp -= reqXP;
+				increaseEXP(0);
+			}
 		}
 
 		@Override
 		public void removeEXP(int xp) {
-			// TODO Auto-generated method stub
-			
+			int endingXP = this.exp - xp;
+			if(endingXP < 0) {
+				this.exp = ((level-1)*250 + 1000) + endingXP;
+				this.level--;
+			}else {
+				this.exp = endingXP;
+			}
 		}
 
 		@Override
 		public void setEXP(int xp) {
-			// TODO Auto-generated method stub
+			int reqXP = (level * 250) + 1000;
+			this.exp = xp;
 			
+			if(exp >= reqXP) {
+				PlayerLevelUpEvent event = new PlayerLevelUpEvent(Bukkit.getPlayer(UUID.fromString(uuid)), this.level, this.level+1);
+				Bukkit.getServer().getPluginManager().callEvent(event);
+				if(event.isCancelled())
+					return;
+				this.level++;
+				this.exp -= reqXP;
+				increaseEXP(0);
+			}
 		}
 
 		@Override
@@ -133,6 +173,8 @@ public class ConfigApi extends CoreAPIAbstract {
 			sec.set("username", player.getName());
 			sec.set("pid", 69420); //I don't plan on using the PID system for Config Player Info since that was more for the mysql database
 			core.fm.saveConfig("playerdata.yml");
+			PlayerInfo info = createPlayerInfo(player);
+			core.pInfo.add(info);
 		}else {
 			PlayerInfo info = createPlayerInfo(player);
 			if(info != null) {
@@ -216,9 +258,9 @@ public class ConfigApi extends CoreAPIAbstract {
 		return false;
 	}
 	
-	private int highestMuteValue(String uuid) {
+	private int highestIDValue(String uuid, String section) {
 		int max = 0;
-		for(String key : cfg.getConfigurationSection("Players." + uuid + ".mutes").getKeys(false)) {
+		for(String key : cfg.getConfigurationSection("Players." + uuid + "." + section).getKeys(false)) {
 				if(Integer.parseInt(key) > max)
 					max = Integer.parseInt(key);
 		}
@@ -235,7 +277,7 @@ public class ConfigApi extends CoreAPIAbstract {
 		if(sec.getConfigurationSection("mutes") == null)
 			sec.createSection("mutes");
 		
-		int lastMuteID = highestMuteValue(player.getUniqueId().toString());
+		int lastMuteID = highestIDValue(player.getUniqueId().toString(), "mutes");
 		
 		sec.set("mutes." + (lastMuteID+1) + ".endtime", endTime);
 		sec.set("mutes." + (lastMuteID+1) + ".unmuted", false);
@@ -258,26 +300,131 @@ public class ConfigApi extends CoreAPIAbstract {
 		
 		for(String key : sec.getConfigurationSection("mutes").getKeys(false)) 
 			sec.set("mutes." + key + ".unmuted", true);
-		
-		
+
+		core.fm.saveConfig("playerdata.yml");
 		return true;
 	}
 
 	@Override
 	public boolean checkBan(Player player) {
-		// TODO Auto-generated method stub
+		if(!playerExists(player))
+			return false;
+		ConfigurationSection sec = cfg.getConfigurationSection("Players." + player.getUniqueId().toString());
+		if(sec.getConfigurationSection("bans") == null)
+			return false;
+		
+		Date cDate = new Date();
+		//Core Difference from this to the MySql version: Server ID is not needed since this is local to this server.
+		for(String key : sec.getConfigurationSection("bans").getKeys(false)) {
+			if(sec.getBoolean(key + ".unbanned")) //Checking if unbanned
+				continue;
+			long endTime = sec.getLong(key + ".endTime");
+			String bReason = sec.getString(key + ".reason");
+			if(endTime == 0) {
+				StringBuilder message = new StringBuilder();
+				message.append("&7[&bBungo &6Networks&7]\n");
+				message.append("&4You have been banned from this server!\n");
+				message.append("&7Reason:\n");
+				message.append(bReason + "\n");
+				message.append("&9Your ban will end on:\n");
+				message.append("&cNever!\n");
+				message.append("&8You are free to submit a ban appeal at: xxxxxxx\n");
+				player.kickPlayer(ChatColor.translateAlternateColorCodes('&', message.toString()));
+				return true;
+			}else if(cDate.getTime() > endTime) {
+				sec.set(key + ".unbanned", true); //Set them to unbanned!
+				return false;
+			}else {
+				StringBuilder message = new StringBuilder();
+				message.append("&7[&bBungo &6Networks&7]\n");
+				message.append("&4You have been banned from this server!\n");
+				message.append("&7Reason:\n");
+				message.append(bReason + "\n");
+				message.append("&9Your ban will end on:\n");
+				Date endDate = new Date(endTime);
+				
+				//Calendar cal = Calendar.getInstance();
+				//cal.setTime(endDate);
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy | hh:mm:ss");
+				message.append("&3" + sdf.format(endDate) + "\n");
+				message.append("&8You are free to submit a ban appeal at: xxxxxxx\n");
+				player.kickPlayer(ChatColor.translateAlternateColorCodes('&', message.toString()));
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public String checkBan(String uuid) {
-		// TODO Auto-generated method stub
+		ConfigurationSection sec = cfg.getConfigurationSection("Players." + uuid);
+		if(sec == null)
+			sec = cfg.createSection("Players");
+		if(sec.getConfigurationSection("bans") == null)
+			return null;
+		
+		Date cDate = new Date();
+		//Core Difference from this to the MySql version: Server ID is not needed since this is local to this server.
+		for(String key : sec.getConfigurationSection("bans").getKeys(false)) {
+			if(sec.getBoolean(key + ".unbanned")) //Checking if unbanned
+				continue;
+			long endTime = sec.getLong(key + ".endTime");
+			String bReason = sec.getString(key + ".reason");
+			if(endTime == 0) {
+				StringBuilder message = new StringBuilder();
+				message.append("&7[&bBungo &6Networks&7]\n");
+				message.append("&4You have been banned from this server!\n");
+				message.append("&7Reason:\n");
+				message.append(bReason + "\n");
+				message.append("&9Your ban will end on:\n");
+				message.append("&cNever!\n");
+				message.append("&8You are free to submit a ban appeal at: xxxxxxx\n");
+				//player.kickPlayer(ChatColor.translateAlternateColorCodes('&', message.toString()));
+				return message.toString();
+			}else if(cDate.getTime() > endTime) {
+				sec.set(key + ".unbanned", true); //Set them to unbanned!
+				return null;
+			}else {
+				StringBuilder message = new StringBuilder();
+				message.append("&7[&bBungo &6Networks&7]\n");
+				message.append("&4You have been banned from this server!\n");
+				message.append("&7Reason:\n");
+				message.append(bReason + "\n");
+				message.append("&9Your ban will end on:\n");
+				Date endDate = new Date(endTime);
+				
+				//Calendar cal = Calendar.getInstance();
+				//cal.setTime(endDate);
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy | hh:mm:ss");
+				message.append("&3" + sdf.format(endDate) + "\n");
+				message.append("&8You are free to submit a ban appeal at: xxxxxxx\n");
+				//player.kickPlayer(ChatColor.translateAlternateColorCodes('&', message.toString()));
+				return message.toString();
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public boolean banPlayer(String username, long time, boolean global, String reason) {
-		// TODO Auto-generated method stub
+		String uuid = getOfflineUUID(username);
+		ConfigurationSection sec = cfg.getConfigurationSection("Players." + uuid);
+		
+		int lastBanID = highestIDValue(getOfflineUUID(username), "bans");
+		
+		sec.set("bans." + (lastBanID+1) + ".endTime", time);
+		sec.set("bans." + (lastBanID+1) + ".reason", reason);
+		sec.set("bans." + (lastBanID+1) + ".unbanned", false);
+		
+		core.fm.saveConfig("playerdata.yml");
+		
+		if(Bukkit.getPlayer(username) != null) {
+			checkBan(Bukkit.getPlayer(username)); //No point in re creating the above ban results wehn I can use the function in its place!
+					//It didnt make sense to do this for the MySQL version because that would require
+					// Me to query the server more times then needed.
+					// Since this is file based there is no latency in just using the function.
+		}
+		
 		return false;
 	}
 

@@ -353,6 +353,9 @@ public class MySQLApi extends CoreAPIAbstract {
 		}
 	}
 	
+	//Reading over this code now made me just see that this is fundamentally flawed.
+	//How is it flawed? Simple, If a player is banned on 2 specific servers but not globally, then the check will only stop on the first server it finds since 
+	//																							I'm not checking any future results.. Oopsie!
 	public boolean checkBan(Player player) {
 		try(Connection conn = core.source.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT reason, isglobal, server, endtime FROM corePlayerBans WHERE uuid = ? AND unbanned = 0")){
 			stmt.setString(1, player.getUniqueId().toString());
@@ -382,7 +385,7 @@ public class MySQLApi extends CoreAPIAbstract {
 				
 				//Calendar cal = Calendar.getInstance();
 				//cal.setTime(endDate);
-				if(endTime > 0) {
+				if(endTime > 0) { //This makes literally no sense since right above I am checking that the end time is == 0. 2am programming in a nut shell lmao.
 					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy | hh:mm:ss");
 					message.append("&3" + sdf.format(endDate) + "\n");
 				}else {
